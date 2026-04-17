@@ -231,6 +231,10 @@ export function AppScreenshotSlot({
       style={{
         width: dim.width,
         height: dim.height,
+        borderRadius: 16,
+        boxShadow: screenshotImage
+          ? `0 0 0 2px ${accentTheme.color}, 0 0 24px ${accentTheme.glowColor}, 0 0 48px ${accentTheme.glowColor}50`
+          : undefined,
       }}
       onMouseEnter={() => setShowControls(true)}
       onMouseLeave={() => {
@@ -257,7 +261,7 @@ export function AppScreenshotSlot({
               : "grab"
             : "pointer",
         }}
-        onClick={!screenshotImage ? triggerUpload : undefined}
+        onClick={undefined}
         onMouseDown={screenshotImage ? handleMouseDown : undefined}
         onWheel={screenshotImage ? handleWheel : undefined}
       >

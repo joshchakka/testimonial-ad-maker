@@ -27,6 +27,11 @@ export function useFileUpload(onFileSelected: (dataUrl: string) => void) {
       }
     };
     reader.readAsDataURL(file);
+
+    // Also reset after reading to ensure next upload always triggers onChange
+    if (inputRef.current) {
+      inputRef.current.value = "";
+    }
   }, []);
 
   return { inputRef, triggerUpload, handleChange };
