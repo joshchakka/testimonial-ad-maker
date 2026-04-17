@@ -112,6 +112,7 @@ export function TestimonialAdEditor() {
             accentTheme={accentTheme}
             onDataChange={handleDataChange}
             canvasRef={canvasRef as React.RefObject<HTMLDivElement>}
+            isExporting={isExporting}
           />
         </div>
       </main>

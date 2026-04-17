@@ -16,6 +16,7 @@ interface TestimonialCanvasProps {
   accentTheme: AccentTheme;
   onDataChange: (data: Partial<TestimonialData>) => void;
   canvasRef: React.RefObject<HTMLDivElement>;
+  isExporting?: boolean;
 }
 
 const staggerVariants = {
@@ -33,6 +34,7 @@ export function TestimonialCanvas({
   accentTheme,
   onDataChange,
   canvasRef,
+  isExporting = false,
 }: TestimonialCanvasProps) {
   const isVertical = format === "9x16";
   const isLandscape = format === "16x9";
@@ -66,6 +68,7 @@ export function TestimonialCanvas({
               accentTheme={accentTheme}
               format={format}
               onDataChange={onDataChange}
+              isExporting={isExporting}
             />
           ) : isLandscape ? (
             <LandscapeLayout
@@ -73,6 +76,7 @@ export function TestimonialCanvas({
               accentTheme={accentTheme}
               format={format}
               onDataChange={onDataChange}
+              isExporting={isExporting}
             />
           ) : (
             <SquareLayout
@@ -80,6 +84,7 @@ export function TestimonialCanvas({
               accentTheme={accentTheme}
               format={format}
               onDataChange={onDataChange}
+              isExporting={isExporting}
             />
           )}
         </motion.div>
@@ -94,11 +99,13 @@ function SquareLayout({
   accentTheme,
   format,
   onDataChange,
+  isExporting = false,
 }: {
   data: TestimonialData;
   accentTheme: AccentTheme;
   format: AdFormat;
   onDataChange: (d: Partial<TestimonialData>) => void;
+  isExporting?: boolean;
 }) {
   return (
     <div className="flex flex-col h-full px-[72px] py-[64px]">
@@ -135,6 +142,7 @@ function SquareLayout({
           accentTheme={accentTheme}
           onScreenshotChange={(img) => onDataChange({ appScreenshot: img })}
           variant="square"
+          isExporting={isExporting}
         />
       </motion.div>
 
@@ -207,11 +215,13 @@ function VerticalLayout({
   accentTheme,
   format,
   onDataChange,
+  isExporting = false,
 }: {
   data: TestimonialData;
   accentTheme: AccentTheme;
   format: AdFormat;
   onDataChange: (d: Partial<TestimonialData>) => void;
+  isExporting?: boolean;
 }) {
   return (
     <div className="flex flex-col h-full px-[72px] py-[96px]">
@@ -248,6 +258,7 @@ function VerticalLayout({
           accentTheme={accentTheme}
           onScreenshotChange={(img) => onDataChange({ appScreenshot: img })}
           variant="vertical"
+          isExporting={isExporting}
         />
       </motion.div>
 
@@ -318,11 +329,13 @@ function LandscapeLayout({
   accentTheme,
   format,
   onDataChange,
+  isExporting = false,
 }: {
   data: TestimonialData;
   accentTheme: AccentTheme;
   format: AdFormat;
   onDataChange: (d: Partial<TestimonialData>) => void;
+  isExporting?: boolean;
 }) {
   return (
     <div className="flex h-full">
@@ -406,6 +419,7 @@ function LandscapeLayout({
             accentTheme={accentTheme}
             onScreenshotChange={(img) => onDataChange({ appScreenshot: img })}
             variant="landscape"
+            isExporting={isExporting}
           />
         </motion.div>
       </div>
