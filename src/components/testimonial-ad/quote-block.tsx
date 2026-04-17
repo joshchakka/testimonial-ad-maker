@@ -1,10 +1,11 @@
-import type { AccentTheme, AdFormat } from "./types";
+import type { AccentTheme, AdFormat, BackgroundMode } from "./types";
 
 interface QuoteBlockProps {
   quote: string;
   accentTheme: AccentTheme;
   format: AdFormat;
   onQuoteChange: (text: string) => void;
+  backgroundMode: BackgroundMode;
 }
 
 export function QuoteBlock({
@@ -12,9 +13,11 @@ export function QuoteBlock({
   accentTheme,
   format,
   onQuoteChange,
+  backgroundMode,
 }: QuoteBlockProps) {
   const isVertical = format === "9x16";
   const isLandscape = format === "16x9";
+  const isDark = backgroundMode === "dark";
 
   const quoteMarkSize = isVertical
     ? "text-[100px] -mb-6"
@@ -54,11 +57,12 @@ export function QuoteBlock({
         <p
           contentEditable
           suppressContentEditableWarning
-          className={`text-white/95 leading-relaxed outline-none cursor-text ${quoteTextSize}`}
+          className={`leading-relaxed outline-none cursor-text ${quoteTextSize}`}
           style={{
             fontFamily: "'Fraunces', serif",
             fontStyle: "italic",
             fontWeight: 400,
+            color: isDark ? "rgba(255,255,255,0.95)" : "rgba(0,0,0,0.85)",
           }}
           onBlur={(e) =>
             onQuoteChange(e.currentTarget.textContent || quote)

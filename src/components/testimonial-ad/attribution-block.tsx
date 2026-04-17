@@ -1,8 +1,11 @@
+import type { BackgroundMode } from "./types";
+
 interface AttributionBlockProps {
   clientName: string;
   clientRole: string;
   onNameChange: (text: string) => void;
   onRoleChange: (text: string) => void;
+  backgroundMode: BackgroundMode;
 }
 
 export function AttributionBlock({
@@ -10,14 +13,20 @@ export function AttributionBlock({
   clientRole,
   onNameChange,
   onRoleChange,
+  backgroundMode,
 }: AttributionBlockProps) {
+  const isDark = backgroundMode === "dark";
+
   return (
     <div className="flex flex-col gap-1">
       <span
         contentEditable
         suppressContentEditableWarning
-        className="text-[22px] font-medium text-white/95 outline-none cursor-text"
-        style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+        className="text-[22px] font-medium outline-none cursor-text"
+        style={{
+          fontFamily: "'Space Grotesk', sans-serif",
+          color: isDark ? "rgba(255,255,255,0.95)" : "rgba(0,0,0,0.85)",
+        }}
         onBlur={(e) =>
           onNameChange(e.currentTarget.textContent || clientName)
         }
@@ -30,7 +39,7 @@ export function AttributionBlock({
         className="text-[18px] font-light outline-none cursor-text"
         style={{
           fontFamily: "'Space Grotesk', sans-serif",
-          color: "#94A3B8",
+          color: isDark ? "#94A3B8" : "#64748B",
         }}
         onBlur={(e) =>
           onRoleChange(e.currentTarget.textContent || clientRole)

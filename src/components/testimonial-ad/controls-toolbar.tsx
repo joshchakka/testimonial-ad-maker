@@ -1,13 +1,15 @@
-import { Download, Square, Smartphone, Monitor } from "lucide-react";
-import type { AccentTheme, AdFormat } from "./types";
+import { Download, Square, Smartphone, Monitor, Sun, Moon } from "lucide-react";
+import type { AccentTheme, AdFormat, BackgroundMode } from "./types";
 import { ACCENT_THEMES } from "./types";
 import { cn } from "@/lib/utils";
 
 interface ControlsToolbarProps {
   format: AdFormat;
   accentTheme: AccentTheme;
+  backgroundMode: BackgroundMode;
   onFormatChange: (format: AdFormat) => void;
   onAccentChange: (theme: AccentTheme) => void;
+  onBackgroundModeChange: (mode: BackgroundMode) => void;
   onExport: () => void;
   isExporting: boolean;
 }
@@ -15,8 +17,10 @@ interface ControlsToolbarProps {
 export function ControlsToolbar({
   format,
   accentTheme,
+  backgroundMode,
   onFormatChange,
   onAccentChange,
+  onBackgroundModeChange,
   onExport,
   isExporting,
 }: ControlsToolbarProps) {
@@ -59,6 +63,34 @@ export function ControlsToolbar({
         >
           <Smartphone className="w-3.5 h-3.5" />
           <span>9×16</span>
+        </button>
+      </div>
+
+      {/* Background Mode Toggle */}
+      <div className="flex items-center gap-1 bg-white/5 rounded-lg p-1 border border-white/10">
+        <button
+          onClick={() => onBackgroundModeChange("dark")}
+          className={cn(
+            "flex items-center gap-2 px-3 py-2 rounded-md text-xs font-medium transition-all",
+            backgroundMode === "dark"
+              ? "bg-white/10 text-white shadow-sm"
+              : "text-white/50 hover:text-white/70"
+          )}
+        >
+          <Moon className="w-3.5 h-3.5" />
+          <span>Dark</span>
+        </button>
+        <button
+          onClick={() => onBackgroundModeChange("light")}
+          className={cn(
+            "flex items-center gap-2 px-3 py-2 rounded-md text-xs font-medium transition-all",
+            backgroundMode === "light"
+              ? "bg-white/10 text-white shadow-sm"
+              : "text-white/50 hover:text-white/70"
+          )}
+        >
+          <Sun className="w-3.5 h-3.5" />
+          <span>Light</span>
         </button>
       </div>
 

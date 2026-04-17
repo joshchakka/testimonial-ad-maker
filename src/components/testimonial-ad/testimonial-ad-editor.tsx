@@ -5,6 +5,7 @@ import {
   DEFAULT_TESTIMONIAL,
   type AccentTheme,
   type AdFormat,
+  type BackgroundMode,
   type TestimonialData,
 } from "./types";
 import { TestimonialCanvas } from "./testimonial-canvas";
@@ -15,10 +16,12 @@ export function TestimonialAdEditor() {
   const [accentTheme, setAccentTheme] = useState<AccentTheme>(
     ACCENT_THEMES[0]
   );
+  const [backgroundMode, setBackgroundMode] = useState<BackgroundMode>("dark");
   const [data, setData] = useState<TestimonialData>(DEFAULT_TESTIMONIAL);
   const [isExporting, setIsExporting] = useState(false);
   const [scale, setScale] = useState(0.5);
   const canvasRef = useRef<HTMLDivElement>(null);
+  const scaleWrapperRef = useRef<HTMLDivElement>(null);
   const mainRef = useRef<HTMLDivElement>(null);
 
   const canvasWidth = format === "16x9" ? 1920 : 1080;
@@ -46,15 +49,49 @@ export function TestimonialAdEditor() {
   }, []);
 
   const handleExport = useCallback(async () => {
-    if (!canvasRef.current || isExporting) return;
+    if (!canvasRef.current || !scaleWrapperRef.current || isExporting) return;
 
     setIsExporting(true);
+
+    // Temporarily remove the scale transform so html-to-image captures at full resolution
+    const wrapper = scaleWrapperRef.current;
+    const main = mainRef.current;
+    const prevTransform = wrapper.style.transform;
+    const prevTransformOrigin = wrapper.style.transformOrigin;
+    const prevTransition = wrapper.style.transition;
+    const prevMainOverflow = main ? main.style.overflow : "";
+    
+    wrapper.style.transition = "none";
+    wrapper.style.transform = "none";
+    wrapper.style.transformOrigin = "top left";
+    if (main) main.style.overflow = "visible";
+
+    // Wait for frames for the DOM to settle
+    await new Promise((r) => requestAnimationFrame(r));
+    await new Promise((r) => setTimeout(r, 100));
+
     try {
+      // Run toPng multiple times - first call can be buggy with fonts/images, subsequent ones are reliable
+      // This is a known workaround for html-to-image rendering issues
+      for (let i = 0; i < 2; i++) {
+        await toPng(canvasRef.current, {
+          width: canvasWidth,
+          height: canvasHeight,
+          pixelRatio: 1,
+          cacheBust: true,
+          skipAutoScale: true,
+          includeQueryParams: true,
+        });
+      }
+
+      // Final pass — this one will be accurate
       const dataUrl = await toPng(canvasRef.current, {
-        width: format === "16x9" ? 1920 : 1080,
-        height: format === "9x16" ? 1920 : 1080,
+        width: canvasWidth,
+        height: canvasHeight,
         pixelRatio: 1,
         cacheBust: true,
+        skipAutoScale: true,
+        includeQueryParams: true,
       });
 
       const link = document.createElement("a");
@@ -64,9 +101,14 @@ export function TestimonialAdEditor() {
     } catch (err) {
       console.error("Export failed:", err);
     } finally {
+      // Restore the scale transform
+      wrapper.style.transform = prevTransform;
+      wrapper.style.transformOrigin = prevTransformOrigin;
+      wrapper.style.transition = prevTransition;
+      if (main) main.style.overflow = prevMainOverflow;
       setIsExporting(false);
     }
-  }, [format, isExporting]);
+  }, [format, isExporting, canvasWidth, canvasHeight]);
 
   return (
     <div className="h-screen bg-[#080B10] flex flex-col overflow-hidden">
@@ -87,8 +129,10 @@ export function TestimonialAdEditor() {
           <ControlsToolbar
             format={format}
             accentTheme={accentTheme}
+            backgroundMode={backgroundMode}
             onFormatChange={setFormat}
             onAccentChange={setAccentTheme}
+            onBackgroundModeChange={setBackgroundMode}
             onExport={handleExport}
             isExporting={isExporting}
           />
@@ -98,6 +142,7 @@ export function TestimonialAdEditor() {
       {/* Canvas Area */}
       <main ref={mainRef} className="flex-1 flex items-center justify-center p-6 overflow-hidden min-h-0">
         <div
+          ref={scaleWrapperRef}
           className="transition-all duration-500 ease-out"
           style={{
             width: canvasWidth,
@@ -110,6 +155,7 @@ export function TestimonialAdEditor() {
             data={data}
             format={format}
             accentTheme={accentTheme}
+            backgroundMode={backgroundMode}
             onDataChange={handleDataChange}
             canvasRef={canvasRef as React.RefObject<HTMLDivElement>}
             isExporting={isExporting}

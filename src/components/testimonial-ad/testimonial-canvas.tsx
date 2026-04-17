@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
-import type { AccentTheme, AdFormat, TestimonialData } from "./types";
+import type { AccentTheme, AdFormat, BackgroundMode, TestimonialData } from "./types";
 import { CanvasBackground } from "./canvas-background";
 import { LogoSlot } from "./logo-slot";
 import { BadgePill } from "./badge-pill";
@@ -14,6 +14,7 @@ interface TestimonialCanvasProps {
   data: TestimonialData;
   format: AdFormat;
   accentTheme: AccentTheme;
+  backgroundMode: BackgroundMode;
   onDataChange: (data: Partial<TestimonialData>) => void;
   canvasRef: React.RefObject<HTMLDivElement>;
   isExporting?: boolean;
@@ -32,6 +33,7 @@ export function TestimonialCanvas({
   data,
   format,
   accentTheme,
+  backgroundMode,
   onDataChange,
   canvasRef,
   isExporting = false,
@@ -52,7 +54,7 @@ export function TestimonialCanvas({
         height: canvasHeight,
       }}
     >
-      <CanvasBackground accentTheme={accentTheme} />
+      <CanvasBackground accentTheme={accentTheme} backgroundMode={backgroundMode} />
       <AnimatePresence mode="wait">
         <motion.div
           key={format}
@@ -66,6 +68,7 @@ export function TestimonialCanvas({
             <VerticalLayout
               data={data}
               accentTheme={accentTheme}
+              backgroundMode={backgroundMode}
               format={format}
               onDataChange={onDataChange}
               isExporting={isExporting}
@@ -74,6 +77,7 @@ export function TestimonialCanvas({
             <LandscapeLayout
               data={data}
               accentTheme={accentTheme}
+              backgroundMode={backgroundMode}
               format={format}
               onDataChange={onDataChange}
               isExporting={isExporting}
@@ -82,6 +86,7 @@ export function TestimonialCanvas({
             <SquareLayout
               data={data}
               accentTheme={accentTheme}
+              backgroundMode={backgroundMode}
               format={format}
               onDataChange={onDataChange}
               isExporting={isExporting}
@@ -97,16 +102,19 @@ export function TestimonialCanvas({
 function SquareLayout({
   data,
   accentTheme,
+  backgroundMode,
   format,
   onDataChange,
   isExporting = false,
 }: {
   data: TestimonialData;
   accentTheme: AccentTheme;
+  backgroundMode: BackgroundMode;
   format: AdFormat;
   onDataChange: (d: Partial<TestimonialData>) => void;
   isExporting?: boolean;
 }) {
+  const isDark = backgroundMode === "dark";
   return (
     <div className="flex flex-col h-full px-[72px] py-[64px]">
       {/* Top: Logo + Badge */}
@@ -122,10 +130,12 @@ function SquareLayout({
           logoImage={data.logoImage}
           onLogoTextChange={(t) => onDataChange({ logoText: t })}
           onLogoImageChange={(img) => onDataChange({ logoImage: img })}
+          backgroundMode={backgroundMode}
         />
         <BadgePill
           text={data.badgeText}
           onTextChange={(t) => onDataChange({ badgeText: t })}
+          backgroundMode={backgroundMode}
         />
       </motion.div>
 
@@ -172,11 +182,12 @@ function SquareLayout({
           accentTheme={accentTheme}
           format={format}
           onQuoteChange={(t) => onDataChange({ quote: t })}
+          backgroundMode={backgroundMode}
         />
       </motion.div>
       {/* Horizontal divider */}
       <motion.div
-        className="w-full h-px bg-white/10 mb-6"
+        className={`w-full h-px mb-6 ${isDark ? "bg-white/10" : "bg-black/10"}`}
         variants={staggerVariants}
         initial="hidden"
         animate="visible"
@@ -196,12 +207,14 @@ function SquareLayout({
             accentTheme={accentTheme}
             onAvatarImageChange={(img) => onDataChange({ avatarImage: img })}
             size={64}
+            backgroundMode={backgroundMode}
           />
           <AttributionBlock
             clientName={data.clientName}
             clientRole={data.clientRole}
             onNameChange={(t) => onDataChange({ clientName: t })}
             onRoleChange={(t) => onDataChange({ clientRole: t })}
+            backgroundMode={backgroundMode}
           />
         </div>
       </motion.div>
@@ -213,16 +226,19 @@ function SquareLayout({
 function VerticalLayout({
   data,
   accentTheme,
+  backgroundMode,
   format,
   onDataChange,
   isExporting = false,
 }: {
   data: TestimonialData;
   accentTheme: AccentTheme;
+  backgroundMode: BackgroundMode;
   format: AdFormat;
   onDataChange: (d: Partial<TestimonialData>) => void;
   isExporting?: boolean;
 }) {
+  const isDark = backgroundMode === "dark";
   return (
     <div className="flex flex-col h-full px-[72px] py-[96px]">
       {/* Top: Logo + Badge */}
@@ -238,10 +254,12 @@ function VerticalLayout({
           logoImage={data.logoImage}
           onLogoTextChange={(t) => onDataChange({ logoText: t })}
           onLogoImageChange={(img) => onDataChange({ logoImage: img })}
+          backgroundMode={backgroundMode}
         />
         <BadgePill
           text={data.badgeText}
           onTextChange={(t) => onDataChange({ badgeText: t })}
+          backgroundMode={backgroundMode}
         />
       </motion.div>
 
@@ -288,11 +306,12 @@ function VerticalLayout({
           accentTheme={accentTheme}
           format={format}
           onQuoteChange={(t) => onDataChange({ quote: t })}
+          backgroundMode={backgroundMode}
         />
       </motion.div>
       {/* Horizontal divider */}
       <motion.div
-        className="w-full h-px bg-white/10 mb-10"
+        className={`w-full h-px mb-10 ${isDark ? "bg-white/10" : "bg-black/10"}`}
         variants={staggerVariants}
         initial="hidden"
         animate="visible"
@@ -311,12 +330,14 @@ function VerticalLayout({
           accentTheme={accentTheme}
           onAvatarImageChange={(img) => onDataChange({ avatarImage: img })}
           size={80}
+          backgroundMode={backgroundMode}
         />
         <AttributionBlock
           clientName={data.clientName}
           clientRole={data.clientRole}
           onNameChange={(t) => onDataChange({ clientName: t })}
           onRoleChange={(t) => onDataChange({ clientRole: t })}
+          backgroundMode={backgroundMode}
         />
       </motion.div>
     </div>
@@ -327,20 +348,23 @@ function VerticalLayout({
 function LandscapeLayout({
   data,
   accentTheme,
+  backgroundMode,
   format,
   onDataChange,
   isExporting = false,
 }: {
   data: TestimonialData;
   accentTheme: AccentTheme;
+  backgroundMode: BackgroundMode;
   format: AdFormat;
   onDataChange: (d: Partial<TestimonialData>) => void;
   isExporting?: boolean;
 }) {
+  const isDark = backgroundMode === "dark";
   return (
     <div className="flex h-full">
       {/* Left column – Attribution & Quote */}
-      <div className="flex flex-col justify-between w-[640px] shrink-0 px-[56px] py-[72px] border-r border-white/5">
+      <div className={`flex flex-col justify-between w-[640px] shrink-0 px-[56px] py-[72px] border-r ${isDark ? "border-white/5" : "border-black/5"}`}>
         {/* Top: Logo + Badge */}
         <motion.div
           className="flex items-center justify-between"
@@ -354,10 +378,12 @@ function LandscapeLayout({
             logoImage={data.logoImage}
             onLogoTextChange={(t) => onDataChange({ logoText: t })}
             onLogoImageChange={(img) => onDataChange({ logoImage: img })}
+            backgroundMode={backgroundMode}
           />
           <BadgePill
             text={data.badgeText}
             onTextChange={(t) => onDataChange({ badgeText: t })}
+            backgroundMode={backgroundMode}
           />
         </motion.div>
 
@@ -379,6 +405,7 @@ function LandscapeLayout({
             accentTheme={accentTheme}
             format={format}
             onQuoteChange={(t) => onDataChange({ quote: t })}
+            backgroundMode={backgroundMode}
           />
         </motion.div>
 
@@ -395,12 +422,14 @@ function LandscapeLayout({
             accentTheme={accentTheme}
             onAvatarImageChange={(img) => onDataChange({ avatarImage: img })}
             size={72}
+            backgroundMode={backgroundMode}
           />
           <AttributionBlock
             clientName={data.clientName}
             clientRole={data.clientRole}
             onNameChange={(t) => onDataChange({ clientName: t })}
             onRoleChange={(t) => onDataChange({ clientRole: t })}
+            backgroundMode={backgroundMode}
           />
         </motion.div>
       </div>

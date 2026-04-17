@@ -1,4 +1,5 @@
 export type AdFormat = "1x1" | "9x16" | "16x9";
+export type BackgroundMode = "dark" | "light";
 
 export interface AccentTheme {
   name: string;
@@ -9,34 +10,34 @@ export interface AccentTheme {
 
 export const ACCENT_THEMES: AccentTheme[] = [
   {
-    name: "Indigo",
-    color: "#6366F1",
-    glowColor: "rgba(99, 102, 241, 0.4)",
-    gradientColor: "rgba(99, 102, 241, 0.15)",
+    name: "Purple",
+    color: "#CD9DFA",
+    glowColor: "rgba(205, 157, 250, 0.4)",
+    gradientColor: "rgba(205, 157, 250, 0.15)",
   },
   {
-    name: "Amber",
-    color: "#F59E0B",
-    glowColor: "rgba(245, 158, 11, 0.4)",
-    gradientColor: "rgba(245, 158, 11, 0.15)",
+    name: "Green",
+    color: "#75D9A6",
+    glowColor: "rgba(117, 217, 166, 0.4)",
+    gradientColor: "rgba(117, 217, 166, 0.15)",
   },
   {
-    name: "Emerald",
-    color: "#10B981",
-    glowColor: "rgba(16, 185, 129, 0.4)",
-    gradientColor: "rgba(16, 185, 129, 0.15)",
+    name: "Blue",
+    color: "#67CFFD",
+    glowColor: "rgba(103, 207, 253, 0.4)",
+    gradientColor: "rgba(103, 207, 253, 0.15)",
   },
   {
-    name: "Rose",
-    color: "#F43F5E",
-    glowColor: "rgba(244, 63, 94, 0.4)",
-    gradientColor: "rgba(244, 63, 94, 0.15)",
+    name: "Mustard",
+    color: "#FFD55F",
+    glowColor: "rgba(255, 213, 95, 0.4)",
+    gradientColor: "rgba(255, 213, 95, 0.15)",
   },
   {
-    name: "Cyan",
-    color: "#06B6D4",
-    glowColor: "rgba(6, 182, 212, 0.4)",
-    gradientColor: "rgba(6, 182, 212, 0.15)",
+    name: "Salmon",
+    color: "#FF898C",
+    glowColor: "rgba(255, 137, 140, 0.4)",
+    gradientColor: "rgba(255, 137, 140, 0.15)",
   },
 ];
 
