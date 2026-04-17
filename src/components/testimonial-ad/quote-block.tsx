@@ -14,6 +14,21 @@ export function QuoteBlock({
   onQuoteChange,
 }: QuoteBlockProps) {
   const isVertical = format === "9x16";
+  const isLandscape = format === "16x9";
+
+  const quoteMarkSize = isVertical
+    ? "text-[100px] -mb-6"
+    : isLandscape
+    ? "text-[90px] -mb-5"
+    : "text-[80px] -mb-5";
+
+  const quoteTextSize = isVertical
+    ? "text-[32px]"
+    : isLandscape
+    ? "text-[32px]"
+    : "text-[24px]";
+
+  const paddingLeft = isVertical ? "pl-8" : "pl-7";
 
   return (
     <div className="relative">
@@ -23,10 +38,10 @@ export function QuoteBlock({
         style={{ backgroundColor: accentTheme.color }}
       />
 
-      <div className={`${isVertical ? "pl-8" : "pl-7"}`}>
+      <div className={paddingLeft}>
         {/* Decorative opening quote mark */}
         <span
-          className={`block leading-none font-bold ${isVertical ? "text-[120px] -mb-8" : "text-[96px] -mb-6"}`}
+          className={`block leading-none font-bold ${quoteMarkSize}`}
           style={{
             fontFamily: "'Fraunces', serif",
             color: accentTheme.color,
@@ -39,7 +54,7 @@ export function QuoteBlock({
         <p
           contentEditable
           suppressContentEditableWarning
-          className={`text-white/95 leading-relaxed outline-none cursor-text ${isVertical ? "text-[36px]" : "text-[28px]"}`}
+          className={`text-white/95 leading-relaxed outline-none cursor-text ${quoteTextSize}`}
           style={{
             fontFamily: "'Fraunces', serif",
             fontStyle: "italic",

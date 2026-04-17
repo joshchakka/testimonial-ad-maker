@@ -7,6 +7,7 @@ import { QuoteBlock } from "./quote-block";
 import { StarRating } from "./star-rating";
 import { ClientAvatar } from "./client-avatar";
 import { AttributionBlock } from "./attribution-block";
+import { AppScreenshotSlot } from "./app-screenshot-slot";
 import React from "react";
 
 interface TestimonialCanvasProps {
@@ -34,9 +35,10 @@ export function TestimonialCanvas({
   canvasRef,
 }: TestimonialCanvasProps) {
   const isVertical = format === "9x16";
+  const isLandscape = format === "16x9";
 
   // Scale canvas down to fit screen while maintaining aspect ratio
-  const canvasWidth = 1080;
+  const canvasWidth = isLandscape ? 1920 : 1080;
   const canvasHeight = isVertical ? 1920 : 1080;
 
   return (
@@ -60,6 +62,13 @@ export function TestimonialCanvas({
         >
           {isVertical ? (
             <VerticalLayout
+              data={data}
+              accentTheme={accentTheme}
+              format={format}
+              onDataChange={onDataChange}
+            />
+          ) : isLandscape ? (
+            <LandscapeLayout
               data={data}
               accentTheme={accentTheme}
               format={format}
@@ -112,25 +121,43 @@ function SquareLayout({
           onTextChange={(t) => onDataChange({ badgeText: t })}
         />
       </motion.div>
-      {/* Spacer pushes content to bottom */}
-      <div className="flex-1" />
-      {/* Star Rating */}
+
+      {/* App Screenshot */}
       <motion.div
-        className="mb-6"
+        className="mt-8 flex justify-center"
         variants={staggerVariants}
         initial="hidden"
         animate="visible"
         custom={1}
       >
-        <StarRating rating={data.rating} accentTheme={accentTheme} onRatingChange={(r) => onDataChange({ rating: r })} />
+        <AppScreenshotSlot
+          screenshotImage={data.appScreenshot}
+          accentTheme={accentTheme}
+          onScreenshotChange={(img) => onDataChange({ appScreenshot: img })}
+          variant="square"
+        />
       </motion.div>
-      {/* Quote */}
+
+      {/* Spacer pushes content to bottom */}
+      <div className="flex-1" />
+
+      {/* Star Rating */}
       <motion.div
-        className="mb-8"
+        className="mb-5"
         variants={staggerVariants}
         initial="hidden"
         animate="visible"
         custom={2}
+      >
+        <StarRating rating={data.rating} accentTheme={accentTheme} onRatingChange={(r) => onDataChange({ rating: r })} />
+      </motion.div>
+      {/* Quote */}
+      <motion.div
+        className="mb-6"
+        variants={staggerVariants}
+        initial="hidden"
+        animate="visible"
+        custom={3}
       >
         <QuoteBlock
           quote={data.quote}
@@ -141,11 +168,11 @@ function SquareLayout({
       </motion.div>
       {/* Horizontal divider */}
       <motion.div
-        className="w-full h-px bg-white/10 mb-8"
+        className="w-full h-px bg-white/10 mb-6"
         variants={staggerVariants}
         initial="hidden"
         animate="visible"
-        custom={3}
+        custom={4}
       />
       {/* Bottom: Avatar + Attribution */}
       <motion.div
@@ -153,7 +180,7 @@ function SquareLayout({
         variants={staggerVariants}
         initial="hidden"
         animate="visible"
-        custom={4}
+        custom={5}
       >
         <div className="flex items-center gap-5">
           <ClientAvatar
@@ -207,15 +234,33 @@ function VerticalLayout({
           onTextChange={(t) => onDataChange({ badgeText: t })}
         />
       </motion.div>
+
+      {/* App Screenshot – hero slot in vertical format */}
+      <motion.div
+        className="mt-12 flex justify-center"
+        variants={staggerVariants}
+        initial="hidden"
+        animate="visible"
+        custom={1}
+      >
+        <AppScreenshotSlot
+          screenshotImage={data.appScreenshot}
+          accentTheme={accentTheme}
+          onScreenshotChange={(img) => onDataChange({ appScreenshot: img })}
+          variant="vertical"
+        />
+      </motion.div>
+
       {/* Spacer pushes content to bottom */}
       <div className="flex-1" />
+
       {/* Star rating */}
       <motion.div
         className="mb-8"
         variants={staggerVariants}
         initial="hidden"
         animate="visible"
-        custom={1}
+        custom={2}
       >
         <StarRating rating={data.rating} accentTheme={accentTheme} onRatingChange={(r) => onDataChange({ rating: r })} />
       </motion.div>
@@ -225,7 +270,7 @@ function VerticalLayout({
         variants={staggerVariants}
         initial="hidden"
         animate="visible"
-        custom={2}
+        custom={3}
       >
         <QuoteBlock
           quote={data.quote}
@@ -240,7 +285,7 @@ function VerticalLayout({
         variants={staggerVariants}
         initial="hidden"
         animate="visible"
-        custom={3}
+        custom={4}
       />
       {/* Bottom: Avatar + Attribution */}
       <motion.div
@@ -248,7 +293,7 @@ function VerticalLayout({
         variants={staggerVariants}
         initial="hidden"
         animate="visible"
-        custom={4}
+        custom={5}
       >
         <ClientAvatar
           avatarImage={data.avatarImage}
@@ -263,6 +308,107 @@ function VerticalLayout({
           onRoleChange={(t) => onDataChange({ clientRole: t })}
         />
       </motion.div>
+    </div>
+  );
+}
+
+/* ─── 16×9 Landscape Layout (1920×1080) ─── */
+function LandscapeLayout({
+  data,
+  accentTheme,
+  format,
+  onDataChange,
+}: {
+  data: TestimonialData;
+  accentTheme: AccentTheme;
+  format: AdFormat;
+  onDataChange: (d: Partial<TestimonialData>) => void;
+}) {
+  return (
+    <div className="flex h-full">
+      {/* Left column – Attribution & Quote */}
+      <div className="flex flex-col justify-between w-[640px] shrink-0 px-[56px] py-[72px] border-r border-white/5">
+        {/* Top: Logo + Badge */}
+        <motion.div
+          className="flex items-center justify-between"
+          variants={staggerVariants}
+          initial="hidden"
+          animate="visible"
+          custom={0}
+        >
+          <LogoSlot
+            logoText={data.logoText}
+            logoImage={data.logoImage}
+            onLogoTextChange={(t) => onDataChange({ logoText: t })}
+            onLogoImageChange={(img) => onDataChange({ logoImage: img })}
+          />
+          <BadgePill
+            text={data.badgeText}
+            onTextChange={(t) => onDataChange({ badgeText: t })}
+          />
+        </motion.div>
+
+        {/* Middle: Quote */}
+        <motion.div
+          className="flex flex-col gap-6"
+          variants={staggerVariants}
+          initial="hidden"
+          animate="visible"
+          custom={1}
+        >
+          <StarRating
+            rating={data.rating}
+            accentTheme={accentTheme}
+            onRatingChange={(r) => onDataChange({ rating: r })}
+          />
+          <QuoteBlock
+            quote={data.quote}
+            accentTheme={accentTheme}
+            format={format}
+            onQuoteChange={(t) => onDataChange({ quote: t })}
+          />
+        </motion.div>
+
+        {/* Bottom: Avatar + Attribution */}
+        <motion.div
+          className="flex items-center gap-6"
+          variants={staggerVariants}
+          initial="hidden"
+          animate="visible"
+          custom={2}
+        >
+          <ClientAvatar
+            avatarImage={data.avatarImage}
+            accentTheme={accentTheme}
+            onAvatarImageChange={(img) => onDataChange({ avatarImage: img })}
+            size={72}
+          />
+          <AttributionBlock
+            clientName={data.clientName}
+            clientRole={data.clientRole}
+            onNameChange={(t) => onDataChange({ clientName: t })}
+            onRoleChange={(t) => onDataChange({ clientRole: t })}
+          />
+        </motion.div>
+      </div>
+
+      {/* Right column – App Screenshot (widescreen hero) */}
+      <div className="flex-1 flex items-center justify-center p-[40px]">
+        <motion.div
+          className="w-full h-full"
+          variants={staggerVariants}
+          initial="hidden"
+          animate="visible"
+          custom={3}
+        >
+          <AppScreenshotSlot
+            screenshotImage={data.appScreenshot}
+            accentTheme={accentTheme}
+            onScreenshotChange={(img) => onDataChange({ appScreenshot: img })}
+            variant="landscape"
+          />
+        </motion.div>
+      </div>
     </div>
   );
 }

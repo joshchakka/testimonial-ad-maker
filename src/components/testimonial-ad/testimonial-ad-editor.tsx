@@ -21,9 +21,8 @@ export function TestimonialAdEditor() {
   const canvasRef = useRef<HTMLDivElement>(null);
   const mainRef = useRef<HTMLDivElement>(null);
 
-  const isVertical = format === "9x16";
-  const canvasWidth = 1080;
-  const canvasHeight = isVertical ? 1920 : 1080;
+  const canvasWidth = format === "16x9" ? 1920 : 1080;
+  const canvasHeight = format === "9x16" ? 1920 : 1080;
 
   // Responsive scale calculation
   useEffect(() => {
@@ -52,7 +51,7 @@ export function TestimonialAdEditor() {
     setIsExporting(true);
     try {
       const dataUrl = await toPng(canvasRef.current, {
-        width: 1080,
+        width: format === "16x9" ? 1920 : 1080,
         height: format === "9x16" ? 1920 : 1080,
         pixelRatio: 1,
         cacheBust: true,
@@ -82,7 +81,7 @@ export function TestimonialAdEditor() {
               Testimonial Ad Builder
             </h1>
             <p className="text-[11px] text-white/30 mt-0.5" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
-              {canvasWidth}×{canvasHeight}px • {format === "1x1" ? "Square" : "Vertical"}
+              {canvasWidth}×{canvasHeight}px • {format === "1x1" ? "Square" : format === "9x16" ? "Vertical" : "Landscape"}
             </p>
           </div>
           <ControlsToolbar

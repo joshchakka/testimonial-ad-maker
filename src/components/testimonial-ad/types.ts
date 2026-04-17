@@ -1,4 +1,4 @@
-export type AdFormat = "1x1" | "9x16";
+export type AdFormat = "1x1" | "9x16" | "16x9";
 
 export interface AccentTheme {
   name: string;
@@ -48,6 +48,7 @@ export interface TestimonialData {
   logoText: string;
   logoImage: string | null;
   avatarImage: string | null;
+  appScreenshot: string | null;
   rating: number;
 }
 
@@ -60,5 +61,6 @@ export const DEFAULT_TESTIMONIAL: TestimonialData = {
   logoText: "DEVCRAFT",
   logoImage: "/images/Logomark - White.png",
   avatarImage: null,
+  appScreenshot: null,
   rating: 5,
 };

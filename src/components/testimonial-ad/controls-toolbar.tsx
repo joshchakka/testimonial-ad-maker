@@ -1,4 +1,4 @@
-import { Download, Square, Smartphone } from "lucide-react";
+import { Download, Square, Smartphone, Monitor } from "lucide-react";
 import type { AccentTheme, AdFormat } from "./types";
 import { ACCENT_THEMES } from "./types";
 import { cn } from "@/lib/utils";
@@ -35,6 +35,18 @@ export function ControlsToolbar({
         >
           <Square className="w-3.5 h-3.5" />
           <span>1×1</span>
+        </button>
+        <button
+          onClick={() => onFormatChange("16x9")}
+          className={cn(
+            "flex items-center gap-2 px-3 py-2 rounded-md text-xs font-medium transition-all",
+            format === "16x9"
+              ? "bg-white/10 text-white shadow-sm"
+              : "text-white/50 hover:text-white/70"
+          )}
+        >
+          <Monitor className="w-3.5 h-3.5" />
+          <span>16×9</span>
         </button>
         <button
           onClick={() => onFormatChange("9x16")}
