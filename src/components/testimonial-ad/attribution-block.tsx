@@ -24,7 +24,7 @@ export function AttributionBlock({
         suppressContentEditableWarning
         className="text-[22px] font-medium outline-none cursor-text"
         style={{
-          fontFamily: "'Space Grotesk', sans-serif",
+          fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
           color: isDark ? "rgba(255,255,255,0.95)" : "rgba(0,0,0,0.85)",
         }}
         onBlur={(e) =>
@@ -38,7 +38,7 @@ export function AttributionBlock({
         suppressContentEditableWarning
         className="text-[18px] font-light outline-none cursor-text"
         style={{
-          fontFamily: "'Space Grotesk', sans-serif",
+          fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
           color: isDark ? "#94A3B8" : "#64748B",
         }}
         onBlur={(e) =>

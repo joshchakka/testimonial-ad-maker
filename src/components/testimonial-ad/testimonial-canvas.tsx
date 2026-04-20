@@ -8,7 +8,7 @@ import { StarRating } from "./star-rating";
 import { ClientAvatar } from "./client-avatar";
 import { AttributionBlock } from "./attribution-block";
 import { AppScreenshotSlot } from "./app-screenshot-slot";
-import React from "react";
+import React, { useState, useCallback, useRef, useEffect } from "react";
 
 interface TestimonialCanvasProps {
   data: TestimonialData;
@@ -361,10 +361,60 @@ function LandscapeLayout({
   isExporting?: boolean;
 }) {
   const isDark = backgroundMode === "dark";
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [leftWidth, setLeftWidth] = useState(640);
+  const [isDragging, setIsDragging] = useState(false);
+  const [isHovering, setIsHovering] = useState(false);
+  const dragStartX = useRef(0);
+  const dragStartWidth = useRef(0);
+
+  const MIN_LEFT = 420;
+  const MAX_LEFT = 960;
+
+  const handleMouseDown = useCallback(
+    (e: React.MouseEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      setIsDragging(true);
+      dragStartX.current = e.clientX;
+      dragStartWidth.current = leftWidth;
+    },
+    [leftWidth]
+  );
+
+  useEffect(() => {
+    if (!isDragging) return;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const container = containerRef.current;
+      if (!container) return;
+      // Get the scale of the canvas (it's often scaled down to fit)
+      const rect = container.getBoundingClientRect();
+      const scale = rect.width / 1920;
+      const delta = (e.clientX - dragStartX.current) / scale;
+      const newWidth = Math.min(MAX_LEFT, Math.max(MIN_LEFT, dragStartWidth.current + delta));
+      setLeftWidth(newWidth);
+    };
+
+    const handleMouseUp = () => {
+      setIsDragging(false);
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mouseup", handleMouseUp);
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
+    };
+  }, [isDragging]);
+
   return (
-    <div className="flex h-full">
+    <div ref={containerRef} className="flex h-full" style={{ cursor: isDragging ? "col-resize" : undefined }}>
       {/* Left column – Attribution & Quote */}
-      <div className={`flex flex-col justify-between w-[640px] shrink-0 px-[56px] py-[72px] border-r ${isDark ? "border-white/5" : "border-black/5"}`}>
+      <div
+        className="flex flex-col justify-between shrink-0 px-[56px] py-[72px]"
+        style={{ width: leftWidth }}
+      >
         {/* Top: Logo + Badge */}
         <motion.div
           className="flex items-center justify-between"
@@ -433,6 +483,73 @@ function LandscapeLayout({
           />
         </motion.div>
       </div>
+
+      {/* Draggable Divider */}
+      {!isExporting && (
+        <div
+          className="relative shrink-0 flex items-center justify-center"
+          style={{
+            width: 12,
+            cursor: "col-resize",
+            zIndex: 20,
+          }}
+          onMouseDown={handleMouseDown}
+          onMouseEnter={() => setIsHovering(true)}
+          onMouseLeave={() => setIsHovering(false)}
+        >
+          {/* Visible line */}
+          <div
+            className="absolute inset-y-0 transition-all duration-200"
+            style={{
+              width: isDragging ? 3 : isHovering ? 2 : 1,
+              left: "50%",
+              transform: "translateX(-50%)",
+              background: isDragging
+                ? accentTheme.color
+                : isHovering
+                ? isDark
+                  ? "rgba(255,255,255,0.2)"
+                  : "rgba(0,0,0,0.15)"
+                : isDark
+                ? "rgba(255,255,255,0.05)"
+                : "rgba(0,0,0,0.05)",
+              boxShadow: isDragging ? `0 0 12px ${accentTheme.glowColor}` : "none",
+            }}
+          />
+          {/* Drag handle dots */}
+          <div
+            className="relative z-10 flex flex-col gap-1 items-center transition-opacity duration-200"
+            style={{ opacity: isDragging || isHovering ? 1 : 0 }}
+          >
+            {[0, 1, 2].map((i) => (
+              <div
+                key={i}
+                style={{
+                  width: 4,
+                  height: 4,
+                  borderRadius: 2,
+                  background: isDragging
+                    ? accentTheme.color
+                    : isDark
+                    ? "rgba(255,255,255,0.4)"
+                    : "rgba(0,0,0,0.3)",
+                }}
+              />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Static border for export */}
+      {isExporting && (
+        <div
+          className="shrink-0"
+          style={{
+            width: 1,
+            background: isDark ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.05)",
+          }}
+        />
+      )}
 
       {/* Right column – App Screenshot (widescreen hero) */}
       <div className="flex-1 flex items-center justify-center p-[40px]">

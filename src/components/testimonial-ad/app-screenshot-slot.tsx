@@ -401,7 +401,7 @@ export function AppScreenshotSlot({
             <div className="text-center">
               <p
                 className="text-[13px] font-medium text-white/40 group-hover:text-white/60 transition-colors"
-                style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+                style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}
               >
                 App Screenshot
               </p>

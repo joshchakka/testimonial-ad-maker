@@ -118,7 +118,7 @@ export function TestimonialAdEditor() {
           <div>
             <h1
               className="text-sm font-semibold text-white/90 tracking-wide"
-              style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+              style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}
             >
               Testimonial Ad Builder
             </h1>

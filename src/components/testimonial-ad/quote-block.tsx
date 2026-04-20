@@ -46,7 +46,7 @@ export function QuoteBlock({
         <span
           className={`block leading-none font-bold ${quoteMarkSize}`}
           style={{
-            fontFamily: "'Fraunces', serif",
+            fontFamily: "'Hedvig Letters Serif', serif",
             color: accentTheme.color,
           }}
         >
@@ -59,8 +59,7 @@ export function QuoteBlock({
           suppressContentEditableWarning
           className={`leading-relaxed outline-none cursor-text ${quoteTextSize}`}
           style={{
-            fontFamily: "'Fraunces', serif",
-            fontStyle: "italic",
+            fontFamily: "'Hedvig Letters Serif', serif",
             fontWeight: 400,
             color: isDark ? "rgba(255,255,255,0.95)" : "rgba(0,0,0,0.85)",
           }}
