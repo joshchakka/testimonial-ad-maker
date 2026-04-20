@@ -15,6 +15,33 @@ import { supabaseConfigured } from "@/lib/supabase";
 import { Cloud, CloudOff, Loader2, Plus, Trash2, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 
+// Pre-fetch Google Fonts CSS to avoid CORS SecurityError when html-to-image
+// tries to read cssRules from cross-origin stylesheets.
+let _fontEmbedCSSCache: string | null = null;
+async function getFontEmbedCSS(): Promise<string> {
+  if (_fontEmbedCSSCache !== null) return _fontEmbedCSSCache;
+  try {
+    const fontUrls = Array.from(document.querySelectorAll('link[rel="stylesheet"]'))
+      .map((link) => (link as HTMLLinkElement).href)
+      .filter((href) => href.includes("fonts.googleapis.com"));
+
+    const cssTexts = await Promise.all(
+      fontUrls.map(async (url) => {
+        try {
+          const res = await fetch(url, { mode: "cors" });
+          return res.ok ? await res.text() : "";
+        } catch {
+          return "";
+        }
+      })
+    );
+    _fontEmbedCSSCache = cssTexts.join("\n");
+  } catch {
+    _fontEmbedCSSCache = "";
+  }
+  return _fontEmbedCSSCache;
+}
+
 export function TestimonialAdEditor() {
   const [format, setFormat] = useState<AdFormat>("1x1");
   const [accentTheme, setAccentTheme] = useState<AccentTheme>(
@@ -212,6 +239,10 @@ export function TestimonialAdEditor() {
     await new Promise((r) => setTimeout(r, 100));
 
     try {
+      // Pre-fetch font CSS to avoid CORS SecurityError when html-to-image
+      // tries to read cssRules from cross-origin Google Fonts stylesheets
+      const fontEmbedCSS = await getFontEmbedCSS();
+
       // Run toPng multiple times - first call can be buggy with fonts/images, subsequent ones are reliable
       // This is a known workaround for html-to-image rendering issues
       for (let i = 0; i < 2; i++) {
@@ -222,6 +253,7 @@ export function TestimonialAdEditor() {
           cacheBust: true,
           skipAutoScale: true,
           includeQueryParams: true,
+          fontEmbedCSS,
         });
       }
 
@@ -233,6 +265,7 @@ export function TestimonialAdEditor() {
         cacheBust: true,
         skipAutoScale: true,
         includeQueryParams: true,
+        fontEmbedCSS,
       });
 
       // Build filename with client name and company
