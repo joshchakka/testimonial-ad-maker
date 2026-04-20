@@ -35,7 +35,7 @@ export function ControlsToolbar({
   const MIN_FONT_SIZE = 16;
   const MAX_FONT_SIZE = 48;
   const FONT_STEP = 2;
-  const MIN_BORDER_THICKNESS = 1;
+  const MIN_BORDER_THICKNESS = 0;
   const MAX_BORDER_THICKNESS = 12;
   const BORDER_STEP = 1;
   return (
