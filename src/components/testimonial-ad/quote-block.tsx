@@ -7,6 +7,7 @@ interface QuoteBlockProps {
   format: AdFormat;
   onQuoteChange: (text: string) => void;
   backgroundMode: BackgroundMode;
+  quoteFontSize?: number;
 }
 
 export function QuoteBlock({
@@ -15,22 +16,19 @@ export function QuoteBlock({
   format,
   onQuoteChange,
   backgroundMode,
+  quoteFontSize,
 }: QuoteBlockProps) {
   const isVertical = format === "9x16";
   const isLandscape = format === "16x9";
   const isDark = backgroundMode === "dark";
 
-  const quoteMarkSize = isVertical
-    ? "text-[100px] -mb-6"
-    : isLandscape
-    ? "text-[90px] -mb-5"
-    : "text-[80px] -mb-5";
+  // Default sizes per format if no custom size provided
+  const defaultSize = isVertical ? 32 : isLandscape ? 32 : 24;
+  const fontSize = quoteFontSize ?? defaultSize;
 
-  const quoteTextSize = isVertical
-    ? "text-[32px]"
-    : isLandscape
-    ? "text-[32px]"
-    : "text-[24px]";
+  // Scale the quote mark proportionally to the font size
+  const quoteMarkPx = Math.round(fontSize * 3.2);
+  const quoteMarkMb = Math.round(fontSize * -0.18);
 
   const paddingLeft = isVertical ? "pl-8" : "pl-7";
 
@@ -45,10 +43,12 @@ export function QuoteBlock({
       <div className={paddingLeft}>
         {/* Decorative opening quote mark */}
         <span
-          className={`block leading-none font-bold ${quoteMarkSize}`}
+          className="block leading-none font-bold"
           style={{
             fontFamily: "'Hedvig Letters Serif', serif",
             color: accentTheme.color,
+            fontSize: `${quoteMarkPx}px`,
+            marginBottom: `${quoteMarkMb}px`,
           }}
         >
           &ldquo;
@@ -58,10 +58,11 @@ export function QuoteBlock({
         <p
           contentEditable
           suppressContentEditableWarning
-          className={`leading-relaxed outline-none cursor-text ${quoteTextSize}`}
+          className="leading-relaxed outline-none cursor-text"
           style={{
             fontFamily: "'Hedvig Letters Serif', serif",
             fontWeight: 400,
+            fontSize: `${fontSize}px`,
             color: isDark ? "rgba(255,255,255,0.95)" : "rgba(0,0,0,0.85)",
           }}
           onPaste={handlePastePlainText}

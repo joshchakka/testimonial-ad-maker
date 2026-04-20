@@ -130,9 +130,11 @@ export function TestimonialAdEditor() {
             format={format}
             accentTheme={accentTheme}
             backgroundMode={backgroundMode}
+            quoteFontSize={data.quoteFontSize}
             onFormatChange={setFormat}
             onAccentChange={setAccentTheme}
             onBackgroundModeChange={setBackgroundMode}
+            onQuoteFontSizeChange={(size) => handleDataChange({ quoteFontSize: size })}
             onExport={handleExport}
             isExporting={isExporting}
           />

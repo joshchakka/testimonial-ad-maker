@@ -192,6 +192,7 @@ function SquareLayout({
           format={format}
           onQuoteChange={(t) => onDataChange({ quote: t })}
           backgroundMode={backgroundMode}
+          quoteFontSize={data.quoteFontSize}
         />
       </motion.div>
       {/* Horizontal divider */}
@@ -317,6 +318,7 @@ function VerticalLayout({
           format={format}
           onQuoteChange={(t) => onDataChange({ quote: t })}
           backgroundMode={backgroundMode}
+          quoteFontSize={data.quoteFontSize}
         />
       </motion.div>
       {/* Horizontal divider */}
@@ -473,6 +475,7 @@ function LandscapeLayout({
             format={format}
             onQuoteChange={(t) => onDataChange({ quote: t })}
             backgroundMode={backgroundMode}
+            quoteFontSize={data.quoteFontSize}
           />
         </motion.div>
 

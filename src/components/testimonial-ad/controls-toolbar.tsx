@@ -1,4 +1,4 @@
-import { Download, Square, Smartphone, Monitor, Sun, Moon } from "lucide-react";
+import { Download, Square, Smartphone, Monitor, Sun, Moon, Minus, Plus, Type } from "lucide-react";
 import type { AccentTheme, AdFormat, BackgroundMode } from "./types";
 import { ACCENT_THEMES } from "./types";
 import { cn } from "@/lib/utils";
@@ -7,9 +7,11 @@ interface ControlsToolbarProps {
   format: AdFormat;
   accentTheme: AccentTheme;
   backgroundMode: BackgroundMode;
+  quoteFontSize: number;
   onFormatChange: (format: AdFormat) => void;
   onAccentChange: (theme: AccentTheme) => void;
   onBackgroundModeChange: (mode: BackgroundMode) => void;
+  onQuoteFontSizeChange: (size: number) => void;
   onExport: () => void;
   isExporting: boolean;
 }
@@ -18,12 +20,17 @@ export function ControlsToolbar({
   format,
   accentTheme,
   backgroundMode,
+  quoteFontSize,
   onFormatChange,
   onAccentChange,
   onBackgroundModeChange,
+  onQuoteFontSizeChange,
   onExport,
   isExporting,
 }: ControlsToolbarProps) {
+  const MIN_FONT_SIZE = 16;
+  const MAX_FONT_SIZE = 48;
+  const STEP = 2;
   return (
     <div className="flex flex-wrap items-center justify-center gap-6 py-4">
       {/* Format Toggle */}
@@ -113,6 +120,45 @@ export function ControlsToolbar({
             title={theme.name}
           />
         ))}
+      </div>
+
+      {/* Quote Font Size */}
+      <div className="flex items-center gap-1.5 bg-white/5 rounded-lg p-1 border border-white/10">
+        <Type className="w-3.5 h-3.5 text-white/40 ml-2" />
+        <button
+          onClick={() =>
+            onQuoteFontSizeChange(Math.max(MIN_FONT_SIZE, quoteFontSize - STEP))
+          }
+          disabled={quoteFontSize <= MIN_FONT_SIZE}
+          className={cn(
+            "flex items-center justify-center w-7 h-7 rounded-md text-xs font-medium transition-all",
+            quoteFontSize <= MIN_FONT_SIZE
+              ? "text-white/20 cursor-not-allowed"
+              : "text-white/60 hover:text-white hover:bg-white/10"
+          )}
+        >
+          <Minus className="w-3 h-3" />
+        </button>
+        <span
+          className="text-[11px] text-white/70 font-mono w-8 text-center tabular-nums"
+          style={{ fontFamily: "'JetBrains Mono', monospace" }}
+        >
+          {quoteFontSize}
+        </span>
+        <button
+          onClick={() =>
+            onQuoteFontSizeChange(Math.min(MAX_FONT_SIZE, quoteFontSize + STEP))
+          }
+          disabled={quoteFontSize >= MAX_FONT_SIZE}
+          className={cn(
+            "flex items-center justify-center w-7 h-7 rounded-md text-xs font-medium transition-all",
+            quoteFontSize >= MAX_FONT_SIZE
+              ? "text-white/20 cursor-not-allowed"
+              : "text-white/60 hover:text-white hover:bg-white/10"
+          )}
+        >
+          <Plus className="w-3 h-3" />
+        </button>
       </div>
 
       {/* Export Button */}
