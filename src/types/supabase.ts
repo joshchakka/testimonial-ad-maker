@@ -19,7 +19,6 @@ export type Database = {
           accent_theme_name: string
           app_screenshot: string | null
           avatar_image: string | null
-          border_thickness: number
           background_mode: string
           badge_text: string
           client_name: string
@@ -39,7 +38,6 @@ export type Database = {
           accent_theme_name?: string
           app_screenshot?: string | null
           avatar_image?: string | null
-          border_thickness?: number
           background_mode?: string
           badge_text?: string
           client_name: string
@@ -59,7 +57,6 @@ export type Database = {
           accent_theme_name?: string
           app_screenshot?: string | null
           avatar_image?: string | null
-          border_thickness?: number
           background_mode?: string
           badge_text?: string
           client_name?: string
@@ -82,9 +79,9 @@ export type Database = {
           accent_theme_name: string
           app_screenshot: string | null
           avatar_image: string | null
-          border_thickness: number
           background_mode: string
           badge_text: string
+          border_thickness: number
           client_name: string
           client_role: string
           created_at: string | null
@@ -101,9 +98,9 @@ export type Database = {
           accent_theme_name?: string
           app_screenshot?: string | null
           avatar_image?: string | null
-          border_thickness?: number
           background_mode?: string
           badge_text?: string
+          border_thickness?: number
           client_name?: string
           client_role?: string
           created_at?: string | null
@@ -120,9 +117,9 @@ export type Database = {
           accent_theme_name?: string
           app_screenshot?: string | null
           avatar_image?: string | null
-          border_thickness?: number
           background_mode?: string
           badge_text?: string
+          border_thickness?: number
           client_name?: string
           client_role?: string
           created_at?: string | null

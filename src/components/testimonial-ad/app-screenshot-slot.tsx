@@ -140,7 +140,7 @@ export function AppScreenshotSlot({
 
   const dimensions = {
     square: { width: 360, height: 240 },
-    vertical: { width: "100%" as const, height: 780 },
+    vertical: { width: "100%" as const, height: "auto" as const, maxHeight: "100%" as const, aspectRatio: "3 / 4" },
     landscape: { width: "100%" as const, height: "100%" as const },
   };
 
@@ -323,6 +323,8 @@ export function AppScreenshotSlot({
       style={{
         width: dim.width,
         height: dim.height,
+        ...("aspectRatio" in dim ? { aspectRatio: dim.aspectRatio } : {}),
+        ...("maxHeight" in dim ? { maxHeight: dim.maxHeight } : {}),
         borderRadius: 16,
       }}
       onMouseEnter={() => setShowControls(true)}
