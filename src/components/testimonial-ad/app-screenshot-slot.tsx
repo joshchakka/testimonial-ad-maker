@@ -332,28 +332,6 @@ export function AppScreenshotSlot({
         setShowControls(false);
       }}
     >
-      {screenshotImage && visibleBounds && (
-        <div
-          className="absolute pointer-events-none z-[18]"
-          style={{
-            left: visibleBounds.x,
-            top: visibleBounds.y,
-            width: visibleBounds.width,
-            height: visibleBounds.height,
-            borderRadius: SCREENSHOT_FRAME_RADIUS,
-            border:
-              borderThickness > 0
-                ? `${borderThickness}px solid ${accentTheme.color}`
-                : "none",
-            boxSizing: "border-box",
-            boxShadow:
-              borderThickness > 0
-                ? `0 0 ${14 + borderThickness * 2}px ${accentTheme.glowColor}, 0 0 ${34 + borderThickness * 4}px ${accentTheme.glowColor}55`
-                : "none",
-            transition: isDragging ? "none" : "all 0.15s ease-out",
-          }}
-        />
-      )}
 
       <div
         className="w-full h-full rounded-2xl transition-all relative overflow-hidden"
@@ -413,6 +391,17 @@ export function AppScreenshotSlot({
                     className="absolute inset-0"
                     style={{
                       boxShadow: "inset 0 0 40px rgba(0,0,0,0.15)",
+                    }}
+                  />
+                )}
+
+                {/* Border rendered as inset box-shadow to avoid overflow clipping */}
+                {borderThickness > 0 && (
+                  <div
+                    className="absolute inset-0 pointer-events-none z-[18]"
+                    style={{
+                      borderRadius: SCREENSHOT_FRAME_RADIUS,
+                      boxShadow: `inset 0 0 0 ${borderThickness}px ${accentTheme.color}`,
                     }}
                   />
                 )}
@@ -532,6 +521,22 @@ export function AppScreenshotSlot({
         )}
 
       </div>
+
+      {/* Outer glow for border — rendered outside overflow-hidden container so it's not clipped */}
+      {screenshotImage && visibleBounds && borderThickness > 0 && (
+        <div
+          className="absolute pointer-events-none z-[14]"
+          style={{
+            left: visibleBounds.x,
+            top: visibleBounds.y,
+            width: visibleBounds.width,
+            height: visibleBounds.height,
+            borderRadius: SCREENSHOT_FRAME_RADIUS,
+            boxShadow: `0 0 ${14 + borderThickness * 2}px ${accentTheme.glowColor}, 0 0 ${34 + borderThickness * 4}px ${accentTheme.glowColor}55`,
+            transition: isDragging ? "none" : "all 0.15s ease-out",
+          }}
+        />
+      )}
 
       {/* Crop/Resize Controls */}
       {screenshotImage && showControls && !isDragging && !isExporting && (

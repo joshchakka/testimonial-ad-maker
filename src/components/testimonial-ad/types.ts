@@ -1,5 +1,6 @@
 export type AdFormat = "1x1" | "9x16" | "16x9";
 export type BackgroundMode = "dark" | "light";
+export type VerticalLayoutVariant = "image-top" | "quote-top";
 
 export interface AccentTheme {
   name: string;

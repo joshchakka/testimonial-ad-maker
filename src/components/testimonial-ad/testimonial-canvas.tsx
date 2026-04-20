@@ -4,6 +4,7 @@ import type {
   AdFormat,
   BackgroundMode,
   TestimonialData,
+  VerticalLayoutVariant,
 } from "./types";
 import { CanvasBackground } from "./canvas-background";
 import { LogoSlot } from "./logo-slot";
@@ -20,6 +21,7 @@ interface TestimonialCanvasProps {
   format: AdFormat;
   accentTheme: AccentTheme;
   backgroundMode: BackgroundMode;
+  verticalLayoutVariant: VerticalLayoutVariant;
   onDataChange: (data: Partial<TestimonialData>) => void;
   canvasRef: React.RefObject<HTMLDivElement>;
   isExporting?: boolean;
@@ -39,6 +41,7 @@ export function TestimonialCanvas({
   format,
   accentTheme,
   backgroundMode,
+  verticalLayoutVariant,
   onDataChange,
   canvasRef,
   isExporting = false,
@@ -65,7 +68,7 @@ export function TestimonialCanvas({
       />
       <AnimatePresence mode="wait">
         <motion.div
-          key={format}
+          key={`${format}-${verticalLayoutVariant}`}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -73,14 +76,25 @@ export function TestimonialCanvas({
           className="relative z-10 w-full h-full"
         >
           {isVertical ? (
-            <VerticalLayout
-              data={data}
-              accentTheme={accentTheme}
-              backgroundMode={backgroundMode}
-              format={format}
-              onDataChange={onDataChange}
-              isExporting={isExporting}
-            />
+            verticalLayoutVariant === "quote-top" ? (
+              <VerticalQuoteTopLayout
+                data={data}
+                accentTheme={accentTheme}
+                backgroundMode={backgroundMode}
+                format={format}
+                onDataChange={onDataChange}
+                isExporting={isExporting}
+              />
+            ) : (
+              <VerticalLayout
+                data={data}
+                accentTheme={accentTheme}
+                backgroundMode={backgroundMode}
+                format={format}
+                onDataChange={onDataChange}
+                isExporting={isExporting}
+              />
+            )
           ) : isLandscape ? (
             <LandscapeLayout
               data={data}
@@ -352,6 +366,136 @@ function VerticalLayout({
           backgroundMode={backgroundMode}
           nameFontSize={40}
           roleFontSize={30}
+        />
+      </motion.div>
+    </div>
+  );
+}
+
+/* ─── 9×16 Vertical Layout — Quote Top (1080×1920) ─── */
+function VerticalQuoteTopLayout({
+  data,
+  accentTheme,
+  backgroundMode,
+  format,
+  onDataChange,
+  isExporting = false,
+}: {
+  data: TestimonialData;
+  accentTheme: AccentTheme;
+  backgroundMode: BackgroundMode;
+  format: AdFormat;
+  onDataChange: (d: Partial<TestimonialData>) => void;
+  isExporting?: boolean;
+}) {
+  const isDark = backgroundMode === "dark";
+  return (
+    <div className="flex flex-col h-full px-[72px] py-[96px]">
+      {/* Top: Logo + Badge */}
+      <motion.div
+        className="flex items-center justify-between"
+        variants={staggerVariants}
+        initial="hidden"
+        animate="visible"
+        custom={0}
+      >
+        <LogoSlot
+          logoText={data.logoText}
+          logoImage={data.logoImage}
+          onLogoTextChange={(t) => onDataChange({ logoText: t })}
+          onLogoImageChange={(img) => onDataChange({ logoImage: img })}
+          backgroundMode={backgroundMode}
+        />
+        <BadgePill
+          text={data.badgeText}
+          onTextChange={(t) => onDataChange({ badgeText: t })}
+          backgroundMode={backgroundMode}
+        />
+      </motion.div>
+
+      {/* Star rating */}
+      <motion.div
+        className="mt-10 mb-6"
+        variants={staggerVariants}
+        initial="hidden"
+        animate="visible"
+        custom={1}
+      >
+        <StarRating
+          rating={data.rating}
+          accentTheme={accentTheme}
+          onRatingChange={(r) => onDataChange({ rating: r })}
+        />
+      </motion.div>
+
+      {/* Quote */}
+      <motion.div
+        className="mb-8"
+        variants={staggerVariants}
+        initial="hidden"
+        animate="visible"
+        custom={2}
+      >
+        <QuoteBlock
+          quote={data.quote}
+          accentTheme={accentTheme}
+          format={format}
+          onQuoteChange={(t) => onDataChange({ quote: t })}
+          backgroundMode={backgroundMode}
+          quoteFontSize={data.quoteFontSize[format]}
+        />
+      </motion.div>
+
+      {/* Horizontal divider */}
+      <motion.div
+        className={`w-full h-px mb-8 ${isDark ? "bg-white/10" : "bg-black/10"}`}
+        variants={staggerVariants}
+        initial="hidden"
+        animate="visible"
+        custom={3}
+      />
+
+      {/* Avatar + Attribution */}
+      <motion.div
+        className="flex items-center gap-8 mb-8"
+        variants={staggerVariants}
+        initial="hidden"
+        animate="visible"
+        custom={4}
+      >
+        <ClientAvatar
+          avatarImage={data.avatarImage}
+          accentTheme={accentTheme}
+          onAvatarImageChange={(img) => onDataChange({ avatarImage: img })}
+          size={90}
+          backgroundMode={backgroundMode}
+        />
+        <AttributionBlock
+          clientName={data.clientName}
+          clientRole={data.clientRole}
+          onNameChange={(t) => onDataChange({ clientName: t })}
+          onRoleChange={(t) => onDataChange({ clientRole: t })}
+          backgroundMode={backgroundMode}
+          nameFontSize={36}
+          roleFontSize={26}
+        />
+      </motion.div>
+
+      {/* App Screenshot – bottom hero slot */}
+      <motion.div
+        className="flex justify-center flex-1 min-h-0 overflow-hidden"
+        variants={staggerVariants}
+        initial="hidden"
+        animate="visible"
+        custom={5}
+      >
+        <AppScreenshotSlot
+          screenshotImage={data.appScreenshot}
+          accentTheme={accentTheme}
+          borderThickness={data.borderThickness[format]}
+          onScreenshotChange={(img) => onDataChange({ appScreenshot: img })}
+          variant="vertical"
+          isExporting={isExporting}
         />
       </motion.div>
     </div>

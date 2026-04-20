@@ -7,6 +7,7 @@ import {
   type AdFormat,
   type BackgroundMode,
   type TestimonialData,
+  type VerticalLayoutVariant,
 } from "./types";
 import { TestimonialCanvas } from "./testimonial-canvas";
 import { ControlsToolbar } from "./controls-toolbar";
@@ -48,6 +49,7 @@ export function TestimonialAdEditor() {
     ACCENT_THEMES[0]
   );
   const [backgroundMode, setBackgroundMode] = useState<BackgroundMode>("dark");
+  const [verticalLayoutVariant, setVerticalLayoutVariant] = useState<VerticalLayoutVariant>("image-top");
   const [data, setData] = useState<TestimonialData>(DEFAULT_TESTIMONIAL);
   const [isExporting, setIsExporting] = useState(false);
   const [scale, setScale] = useState(0.5);
@@ -327,7 +329,7 @@ export function TestimonialAdEditor() {
                 Testimonial Ad Builder
               </h1>
               <p className="text-[11px] text-white/30 mt-0.5" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
-                {canvasWidth}×{canvasHeight}px • {format === "1x1" ? "Square" : format === "9x16" ? "Vertical" : "Landscape"}
+                {canvasWidth}×{canvasHeight}px • {format === "1x1" ? "Square" : format === "9x16" ? `Vertical (${verticalLayoutVariant === "quote-top" ? "Quote Top" : "Image Top"})` : "Landscape"}
               </p>
             </div>
 
@@ -421,11 +423,13 @@ export function TestimonialAdEditor() {
             backgroundMode={backgroundMode}
             quoteFontSize={data.quoteFontSize[format]}
             borderThickness={data.borderThickness[format]}
+            verticalLayoutVariant={verticalLayoutVariant}
             onFormatChange={handleFormatChange}
             onAccentChange={handleAccentChange}
             onBackgroundModeChange={handleBackgroundModeChange}
             onQuoteFontSizeChange={handleQuoteFontSizeChange}
             onBorderThicknessChange={handleBorderThicknessChange}
+            onVerticalLayoutVariantChange={setVerticalLayoutVariant}
             onExport={handleExport}
             isExporting={isExporting}
           />
@@ -449,6 +453,7 @@ export function TestimonialAdEditor() {
             format={format}
             accentTheme={accentTheme}
             backgroundMode={backgroundMode}
+            verticalLayoutVariant={verticalLayoutVariant}
             onDataChange={handleDataChange}
             canvasRef={canvasRef as React.RefObject<HTMLDivElement>}
             isExporting={isExporting}
