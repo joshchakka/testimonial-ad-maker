@@ -139,7 +139,7 @@ export function AppScreenshotSlot({
   const containerRef = useRef<HTMLDivElement>(null);
 
   const dimensions = {
-    square: { width: 360, height: 240 },
+    square: { width: "100%" as const, height: "100%" as const },
     vertical: { width: "100%" as const, height: "auto" as const, maxHeight: "100%" as const, aspectRatio: "3 / 4" },
     landscape: { width: "100%" as const, height: "100%" as const },
   };

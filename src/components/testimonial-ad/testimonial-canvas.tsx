@@ -124,7 +124,7 @@ function SquareLayout({
 }) {
   const isDark = backgroundMode === "dark";
   return (
-    <div className="flex flex-col h-full px-[72px] py-[64px]">
+    <div className="flex flex-col h-full px-[64px] py-[56px]">
       {/* Top: Logo + Badge */}
       <motion.div
         className="flex items-center justify-between"
@@ -146,9 +146,9 @@ function SquareLayout({
           backgroundMode={backgroundMode}
         />
       </motion.div>
-      {/* App Screenshot */}
+      {/* App Screenshot – hero slot */}
       <motion.div
-        className="mt-8 flex justify-center"
+        className="mt-6 flex justify-center flex-1 min-h-0 overflow-hidden"
         variants={staggerVariants}
         initial="hidden"
         animate="visible"
@@ -163,11 +163,9 @@ function SquareLayout({
           isExporting={isExporting}
         />
       </motion.div>
-      {/* Spacer pushes content to bottom */}
-      <div className="flex-1" />
       {/* Star Rating */}
       <motion.div
-        className="mb-5"
+        className="mt-4 mb-3"
         variants={staggerVariants}
         initial="hidden"
         animate="visible"
@@ -181,7 +179,7 @@ function SquareLayout({
       </motion.div>
       {/* Quote */}
       <motion.div
-        className="mb-6"
+        className="mb-4"
         variants={staggerVariants}
         initial="hidden"
         animate="visible"
@@ -198,7 +196,7 @@ function SquareLayout({
       </motion.div>
       {/* Horizontal divider */}
       <motion.div
-        className={`w-full h-px mb-6 ${isDark ? "bg-white/10" : "bg-black/10"}`}
+        className={`w-full h-px mb-4 ${isDark ? "bg-white/10" : "bg-black/10"}`}
         variants={staggerVariants}
         initial="hidden"
         animate="visible"
@@ -217,7 +215,7 @@ function SquareLayout({
             avatarImage={data.avatarImage}
             accentTheme={accentTheme}
             onAvatarImageChange={(img) => onDataChange({ avatarImage: img })}
-            size={64}
+            size={56}
             backgroundMode={backgroundMode}
           />
           <AttributionBlock
