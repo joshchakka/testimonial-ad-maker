@@ -62,7 +62,7 @@ export function AppScreenshotSlot({
 
   const dimensions = {
     square: { width: 360, height: 240 },
-    vertical: { width: "100%" as const, height: 420 },
+    vertical: { width: "100%" as const, height: 780 },
     landscape: { width: "100%" as const, height: "100%" as const },
   };
 
@@ -188,13 +188,14 @@ export function AppScreenshotSlot({
       };
 
       const handleMouseMove = (ev: MouseEvent) => {
-        if (!dragStartRef.current) return;
-        const dx = ev.clientX - dragStartRef.current.x;
-        const dy = ev.clientY - dragStartRef.current.y;
+        const start = dragStartRef.current;
+        if (!start) return;
+        const dx = ev.clientX - start.x;
+        const dy = ev.clientY - start.y;
         setCrop((prev) => ({
           ...prev,
-          offsetX: dragStartRef.current!.ox + dx,
-          offsetY: dragStartRef.current!.oy + dy,
+          offsetX: start.ox + dx,
+          offsetY: start.oy + dy,
         }));
       };
 
@@ -242,7 +243,7 @@ export function AppScreenshotSlot({
       }}
     >
       <div
-        className={`w-full h-full rounded-2xl transition-all relative ${screenshotImage && isApproved ? '' : 'overflow-hidden'}`}
+        className="w-full h-full rounded-2xl transition-all relative overflow-hidden"
         style={{
           background: screenshotImage
             ? "transparent"
@@ -268,7 +269,7 @@ export function AppScreenshotSlot({
         {screenshotImage ? (
           <div
             className="w-full h-full overflow-hidden relative"
-            style={{ background: isApproved ? "transparent" : "#0D1117" }}
+            style={{ background: "#0D1117" }}
           >
             <img
               ref={imgRef}
@@ -281,11 +282,6 @@ export function AppScreenshotSlot({
                 transform: `scale(${crop.scale}) translate(${crop.offsetX / crop.scale}px, ${crop.offsetY / crop.scale}px)`,
                 transformOrigin: "center center",
                 transition: isDragging ? "none" : "transform 0.15s ease-out",
-                ...(isApproved && approvedCrop
-                  ? {
-                      clipPath: `inset(${approvedCrop.y}px ${containerRef.current ? containerRef.current.clientWidth - (approvedCrop.x + approvedCrop.width) : 0}px ${containerRef.current ? containerRef.current.clientHeight - (approvedCrop.y + approvedCrop.height) : 0}px ${approvedCrop.x}px round 12px)`,
-                    }
-                  : {}),
               }}
             />
 

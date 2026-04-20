@@ -274,7 +274,7 @@ function VerticalLayout({
       </motion.div>
       {/* App Screenshot – hero slot in vertical format */}
       <motion.div
-        className="mt-12 flex justify-center"
+        className="mt-10 flex justify-center"
         variants={staggerVariants}
         initial="hidden"
         animate="visible"
@@ -289,7 +289,7 @@ function VerticalLayout({
         />
       </motion.div>
       {/* Spacer pushes content to bottom */}
-      <div className="flex-1" />
+      <div className="flex-1 min-h-[32px]" />
       {/* Star rating */}
       <motion.div
         className="mb-8"
