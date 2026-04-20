@@ -1,5 +1,10 @@
 import { motion, AnimatePresence } from "framer-motion";
-import type { AccentTheme, AdFormat, BackgroundMode, TestimonialData } from "./types";
+import type {
+  AccentTheme,
+  AdFormat,
+  BackgroundMode,
+  TestimonialData,
+} from "./types";
 import { CanvasBackground } from "./canvas-background";
 import { LogoSlot } from "./logo-slot";
 import { BadgePill } from "./badge-pill";
@@ -54,7 +59,10 @@ export function TestimonialCanvas({
         height: canvasHeight,
       }}
     >
-      <CanvasBackground accentTheme={accentTheme} backgroundMode={backgroundMode} />
+      <CanvasBackground
+        accentTheme={accentTheme}
+        backgroundMode={backgroundMode}
+      />
       <AnimatePresence mode="wait">
         <motion.div
           key={format}
@@ -138,7 +146,6 @@ function SquareLayout({
           backgroundMode={backgroundMode}
         />
       </motion.div>
-
       {/* App Screenshot */}
       <motion.div
         className="mt-8 flex justify-center"
@@ -155,10 +162,8 @@ function SquareLayout({
           isExporting={isExporting}
         />
       </motion.div>
-
       {/* Spacer pushes content to bottom */}
       <div className="flex-1" />
-
       {/* Star Rating */}
       <motion.div
         className="mb-5"
@@ -167,7 +172,11 @@ function SquareLayout({
         animate="visible"
         custom={2}
       >
-        <StarRating rating={data.rating} accentTheme={accentTheme} onRatingChange={(r) => onDataChange({ rating: r })} />
+        <StarRating
+          rating={data.rating}
+          accentTheme={accentTheme}
+          onRatingChange={(r) => onDataChange({ rating: r })}
+        />
       </motion.div>
       {/* Quote */}
       <motion.div
@@ -262,7 +271,6 @@ function VerticalLayout({
           backgroundMode={backgroundMode}
         />
       </motion.div>
-
       {/* App Screenshot – hero slot in vertical format */}
       <motion.div
         className="mt-12 flex justify-center"
@@ -279,10 +287,8 @@ function VerticalLayout({
           isExporting={isExporting}
         />
       </motion.div>
-
       {/* Spacer pushes content to bottom */}
       <div className="flex-1" />
-
       {/* Star rating */}
       <motion.div
         className="mb-8"
@@ -291,7 +297,11 @@ function VerticalLayout({
         animate="visible"
         custom={2}
       >
-        <StarRating rating={data.rating} accentTheme={accentTheme} onRatingChange={(r) => onDataChange({ rating: r })} />
+        <StarRating
+          rating={data.rating}
+          accentTheme={accentTheme}
+          onRatingChange={(r) => onDataChange({ rating: r })}
+        />
       </motion.div>
       {/* Quote */}
       <motion.div
@@ -379,7 +389,7 @@ function LandscapeLayout({
       dragStartX.current = e.clientX;
       dragStartWidth.current = leftWidth;
     },
-    [leftWidth]
+    [leftWidth],
   );
 
   useEffect(() => {
@@ -392,7 +402,10 @@ function LandscapeLayout({
       const rect = container.getBoundingClientRect();
       const scale = rect.width / 1920;
       const delta = (e.clientX - dragStartX.current) / scale;
-      const newWidth = Math.min(MAX_LEFT, Math.max(MIN_LEFT, dragStartWidth.current + delta));
+      const newWidth = Math.min(
+        MAX_LEFT,
+        Math.max(MIN_LEFT, dragStartWidth.current + delta),
+      );
       setLeftWidth(newWidth);
     };
 
@@ -409,7 +422,11 @@ function LandscapeLayout({
   }, [isDragging]);
 
   return (
-    <div ref={containerRef} className="flex h-full" style={{ cursor: isDragging ? "col-resize" : undefined }}>
+    <div
+      ref={containerRef}
+      className="flex h-full"
+      style={{ cursor: isDragging ? "col-resize" : undefined }}
+    >
       {/* Left column – Attribution & Quote */}
       <div
         className="flex flex-col justify-between shrink-0 px-[56px] py-[72px]"
@@ -461,7 +478,7 @@ function LandscapeLayout({
 
         {/* Bottom: Avatar + Attribution */}
         <motion.div
-          className="flex items-center gap-6"
+          className="flex items-center gap-8 w-[420px] h-[120px]"
           variants={staggerVariants}
           initial="hidden"
           animate="visible"
@@ -471,7 +488,7 @@ function LandscapeLayout({
             avatarImage={data.avatarImage}
             accentTheme={accentTheme}
             onAvatarImageChange={(img) => onDataChange({ avatarImage: img })}
-            size={72}
+            size={96}
             backgroundMode={backgroundMode}
           />
           <AttributionBlock
@@ -483,7 +500,6 @@ function LandscapeLayout({
           />
         </motion.div>
       </div>
-
       {/* Draggable Divider */}
       {!isExporting && (
         <div
@@ -507,13 +523,15 @@ function LandscapeLayout({
               background: isDragging
                 ? accentTheme.color
                 : isHovering
-                ? isDark
-                  ? "rgba(255,255,255,0.2)"
-                  : "rgba(0,0,0,0.15)"
-                : isDark
-                ? "rgba(255,255,255,0.05)"
-                : "rgba(0,0,0,0.05)",
-              boxShadow: isDragging ? `0 0 12px ${accentTheme.glowColor}` : "none",
+                  ? isDark
+                    ? "rgba(255,255,255,0.2)"
+                    : "rgba(0,0,0,0.15)"
+                  : isDark
+                    ? "rgba(255,255,255,0.05)"
+                    : "rgba(0,0,0,0.05)",
+              boxShadow: isDragging
+                ? `0 0 12px ${accentTheme.glowColor}`
+                : "none",
             }}
           />
           {/* Drag handle dots */}
@@ -531,15 +549,14 @@ function LandscapeLayout({
                   background: isDragging
                     ? accentTheme.color
                     : isDark
-                    ? "rgba(255,255,255,0.4)"
-                    : "rgba(0,0,0,0.3)",
+                      ? "rgba(255,255,255,0.4)"
+                      : "rgba(0,0,0,0.3)",
                 }}
               />
             ))}
           </div>
         </div>
       )}
-
       {/* Static border for export */}
       {isExporting && (
         <div
@@ -550,7 +567,6 @@ function LandscapeLayout({
           }}
         />
       )}
-
       {/* Right column – App Screenshot (widescreen hero) */}
       <div className="flex-1 flex items-center justify-center p-[40px]">
         <motion.div

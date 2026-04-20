@@ -1,4 +1,5 @@
 import type { BackgroundMode } from "./types";
+import { handlePastePlainText } from "./paste-plain-text";
 
 interface BadgePillProps {
   text: string;
@@ -19,6 +20,7 @@ export function BadgePill({ text, onTextChange, backgroundMode }: BadgePillProps
           : "border-black/10 bg-black/5 text-black/50"
       }`}
       style={{ fontFamily: "'JetBrains Mono', monospace" }}
+      onPaste={handlePastePlainText}
       onBlur={(e) => onTextChange(e.currentTarget.textContent || text)}
     >
       {text}

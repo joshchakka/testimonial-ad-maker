@@ -1,4 +1,5 @@
 import type { BackgroundMode } from "./types";
+import { handlePastePlainText } from "./paste-plain-text";
 
 interface AttributionBlockProps {
   clientName: string;
@@ -18,15 +19,16 @@ export function AttributionBlock({
   const isDark = backgroundMode === "dark";
 
   return (
-    <div className="flex flex-col gap-1">
+    <div className="flex flex-col gap-1.5">
       <span
         contentEditable
         suppressContentEditableWarning
-        className="text-[22px] font-medium outline-none cursor-text"
+        className="text-[30px] font-medium outline-none cursor-text"
         style={{
           fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
           color: isDark ? "rgba(255,255,255,0.95)" : "rgba(0,0,0,0.85)",
         }}
+        onPaste={handlePastePlainText}
         onBlur={(e) =>
           onNameChange(e.currentTarget.textContent || clientName)
         }
@@ -36,11 +38,12 @@ export function AttributionBlock({
       <span
         contentEditable
         suppressContentEditableWarning
-        className="text-[18px] font-light outline-none cursor-text"
+        className="text-[24px] font-light outline-none cursor-text"
         style={{
           fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
           color: isDark ? "#94A3B8" : "#64748B",
         }}
+        onPaste={handlePastePlainText}
         onBlur={(e) =>
           onRoleChange(e.currentTarget.textContent || clientRole)
         }

@@ -1,4 +1,5 @@
 import type { AccentTheme, AdFormat, BackgroundMode } from "./types";
+import { handlePastePlainText } from "./paste-plain-text";
 
 interface QuoteBlockProps {
   quote: string;
@@ -63,6 +64,7 @@ export function QuoteBlock({
             fontWeight: 400,
             color: isDark ? "rgba(255,255,255,0.95)" : "rgba(0,0,0,0.85)",
           }}
+          onPaste={handlePastePlainText}
           onBlur={(e) =>
             onQuoteChange(e.currentTarget.textContent || quote)
           }

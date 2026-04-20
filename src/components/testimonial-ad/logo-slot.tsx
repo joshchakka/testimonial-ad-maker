@@ -1,6 +1,7 @@
 import { useFileUpload } from "@/hooks/use-file-upload";
 import { Upload, X } from "lucide-react";
 import type { BackgroundMode } from "./types";
+import { handlePastePlainText } from "./paste-plain-text";
 
 interface LogoSlotProps {
   logoText: string;
@@ -67,6 +68,7 @@ export function LogoSlot({
                 fontFamily: "'JetBrains Mono', monospace",
                 color: isDark ? "rgba(255,255,255,0.9)" : "rgba(0,0,0,0.85)",
               }}
+              onPaste={handlePastePlainText}
               onBlur={(e) =>
                 onLogoTextChange(e.currentTarget.textContent || logoText)
               }
