@@ -476,7 +476,7 @@ export function AppScreenshotSlot({
                   />
                   {/* Approved badge */}
                   <div
-                    className="absolute z-[16] flex items-center gap-1.5 px-2.5 py-1 rounded-full"
+                    className={`absolute z-[16] flex items-center ${variant === "vertical" ? "gap-2 px-3.5 py-1.5" : "gap-1.5 px-2.5 py-1"} rounded-full`}
                     style={{
                       left: visibleBounds.x + visibleBounds.width / 2,
                       top: visibleBounds.y - 8,
@@ -484,13 +484,13 @@ export function AppScreenshotSlot({
                       background: accentTheme.color,
                       boxShadow: `0 2px 12px ${accentTheme.glowColor}`,
                       fontFamily: "'JetBrains Mono', monospace",
-                      fontSize: 10,
+                      fontSize: variant === "vertical" ? 14 : 10,
                       color: "#fff",
                       fontWeight: 600,
                       letterSpacing: "0.02em",
                     }}
                   >
-                    <Check className="w-3 h-3" />
+                    <Check className={variant === "vertical" ? "w-4 h-4" : "w-3 h-3"} />
                     Crop Approved
                   </div>
                 </div>
@@ -499,30 +499,30 @@ export function AppScreenshotSlot({
           </div>
         ) : (
           <div
-            className="w-full h-full flex flex-col items-center justify-center gap-4 cursor-pointer"
+            className={`w-full h-full flex flex-col items-center justify-center cursor-pointer ${variant === "vertical" ? "gap-6" : "gap-4"}`}
             onClick={triggerUpload}
           >
             <div
-              className="w-16 h-16 rounded-2xl flex items-center justify-center transition-all group-hover:scale-110"
+              className={`${variant === "vertical" ? "w-24 h-24 rounded-3xl" : "w-16 h-16 rounded-2xl"} flex items-center justify-center transition-all group-hover:scale-110`}
               style={{
                 background: `${accentTheme.color}15`,
                 border: `1px dashed ${accentTheme.color}40`,
               }}
             >
               <MonitorSmartphone
-                className="w-7 h-7 transition-colors"
+                className={`${variant === "vertical" ? "w-11 h-11" : "w-7 h-7"} transition-colors`}
                 style={{ color: `${accentTheme.color}90` }}
               />
             </div>
             <div className="text-center">
               <p
-                className="text-[13px] font-medium text-white/40 group-hover:text-white/60 transition-colors"
+                className={`${variant === "vertical" ? "text-[18px]" : "text-[13px]"} font-medium text-white/40 group-hover:text-white/60 transition-colors`}
                 style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}
               >
                 App Screenshot
               </p>
               <p
-                className="text-[11px] text-white/20 mt-1"
+                className={`${variant === "vertical" ? "text-[14px] mt-2" : "text-[11px] mt-1"} text-white/20`}
                 style={{ fontFamily: "'JetBrains Mono', monospace" }}
               >
                 Click to upload
@@ -536,7 +536,7 @@ export function AppScreenshotSlot({
       {/* Crop/Resize Controls */}
       {screenshotImage && showControls && !isDragging && !isExporting && (
         <div
-          className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-1.5 px-2 py-1.5 rounded-lg z-20 transition-opacity"
+          className={`absolute ${variant === "vertical" ? "bottom-5" : "bottom-3"} left-1/2 -translate-x-1/2 flex items-center ${variant === "vertical" ? "gap-2 px-3 py-2.5 rounded-xl" : "gap-1.5 px-2 py-1.5 rounded-lg"} z-20 transition-opacity`}
           style={{
             background: "rgba(0,0,0,0.75)",
             backdropFilter: "blur(12px)",
@@ -546,46 +546,46 @@ export function AppScreenshotSlot({
           {!isApproved && (
             <>
               <button
-                className="flex items-center justify-center w-7 h-7 rounded-md hover:bg-white/10 text-white/70 hover:text-white transition-colors"
+                className={`flex items-center justify-center ${variant === "vertical" ? "w-9 h-9" : "w-7 h-7"} rounded-md hover:bg-white/10 text-white/70 hover:text-white transition-colors`}
                 onClick={handleZoomOut}
                 title="Zoom out"
               >
-                <ZoomOut className="w-3.5 h-3.5" />
+                <ZoomOut className={variant === "vertical" ? "w-5 h-5" : "w-3.5 h-3.5"} />
               </button>
 
               <div
-                className="text-[10px] text-white/50 min-w-[40px] text-center select-none"
+                className={`${variant === "vertical" ? "text-[13px] min-w-[48px]" : "text-[10px] min-w-[40px]"} text-white/50 text-center select-none`}
                 style={{ fontFamily: "'JetBrains Mono', monospace" }}
               >
                 {Math.round(crop.scale * 100)}%
               </div>
 
               <button
-                className="flex items-center justify-center w-7 h-7 rounded-md hover:bg-white/10 text-white/70 hover:text-white transition-colors"
+                className={`flex items-center justify-center ${variant === "vertical" ? "w-9 h-9" : "w-7 h-7"} rounded-md hover:bg-white/10 text-white/70 hover:text-white transition-colors`}
                 onClick={handleZoomIn}
                 title="Zoom in"
               >
-                <ZoomIn className="w-3.5 h-3.5" />
+                <ZoomIn className={variant === "vertical" ? "w-5 h-5" : "w-3.5 h-3.5"} />
               </button>
 
-              <div className="w-px h-4 bg-white/10 mx-0.5" />
+              <div className={`w-px ${variant === "vertical" ? "h-5" : "h-4"} bg-white/10 mx-0.5`} />
 
               <div
-                className="flex items-center gap-1 text-[10px] text-white/40 select-none px-1"
+                className={`flex items-center gap-1 ${variant === "vertical" ? "text-[13px]" : "text-[10px]"} text-white/40 select-none px-1`}
                 title="Drag image to reposition"
               >
-                <Move className="w-3 h-3" />
+                <Move className={variant === "vertical" ? "w-4 h-4" : "w-3 h-3"} />
                 <span style={{ fontFamily: "'JetBrains Mono', monospace" }}>Drag</span>
               </div>
 
-              <div className="w-px h-4 bg-white/10 mx-0.5" />
+              <div className={`w-px ${variant === "vertical" ? "h-5" : "h-4"} bg-white/10 mx-0.5`} />
             </>
           )}
 
           {/* Approve / Edit Crop button */}
           {!isApproved ? (
             <button
-              className="flex items-center justify-center gap-1 h-7 px-2.5 rounded-md text-white/90 hover:text-white transition-all text-[10px] font-medium"
+              className={`flex items-center justify-center gap-1 ${variant === "vertical" ? "h-9 px-3.5 text-[13px]" : "h-7 px-2.5 text-[10px]"} rounded-md text-white/90 hover:text-white transition-all font-medium`}
               style={{
                 background: `${accentTheme.color}30`,
                 border: `1px solid ${accentTheme.color}50`,
@@ -594,12 +594,12 @@ export function AppScreenshotSlot({
               onClick={handleApprove}
               title="Approve current crop"
             >
-              <Check className="w-3 h-3" />
+              <Check className={variant === "vertical" ? "w-4 h-4" : "w-3 h-3"} />
               Approve
             </button>
           ) : (
             <button
-              className="flex items-center justify-center gap-1 h-7 px-2.5 rounded-md text-white/90 hover:text-white transition-all text-[10px] font-medium"
+              className={`flex items-center justify-center gap-1 ${variant === "vertical" ? "h-9 px-3.5 text-[13px]" : "h-7 px-2.5 text-[10px]"} rounded-md text-white/90 hover:text-white transition-all font-medium`}
               style={{
                 background: "rgba(255,255,255,0.08)",
                 border: "1px solid rgba(255,255,255,0.15)",
@@ -608,30 +608,30 @@ export function AppScreenshotSlot({
               onClick={handleEditCrop}
               title="Edit crop"
             >
-              <Pencil className="w-3 h-3" />
+              <Pencil className={variant === "vertical" ? "w-4 h-4" : "w-3 h-3"} />
               Edit Crop
             </button>
           )}
 
-          <div className="w-px h-4 bg-white/10 mx-0.5" />
+          <div className={`w-px ${variant === "vertical" ? "h-5" : "h-4"} bg-white/10 mx-0.5`} />
 
           <button
-            className="flex items-center justify-center w-7 h-7 rounded-md hover:bg-white/10 text-white/70 hover:text-white transition-colors"
+            className={`flex items-center justify-center ${variant === "vertical" ? "w-9 h-9" : "w-7 h-7"} rounded-md hover:bg-white/10 text-white/70 hover:text-white transition-colors`}
             onClick={handleReset}
             title="Reset position & zoom"
           >
-            <RotateCcw className="w-3.5 h-3.5" />
+            <RotateCcw className={variant === "vertical" ? "w-5 h-5" : "w-3.5 h-3.5"} />
           </button>
 
           <button
-            className="flex items-center justify-center w-7 h-7 rounded-md hover:bg-white/10 text-white/70 hover:text-white transition-colors"
+            className={`flex items-center justify-center ${variant === "vertical" ? "w-9 h-9" : "w-7 h-7"} rounded-md hover:bg-white/10 text-white/70 hover:text-white transition-colors`}
             onClick={(e) => {
               e.stopPropagation();
               triggerUpload();
             }}
             title="Replace image"
           >
-            <MonitorSmartphone className="w-3.5 h-3.5" />
+            <MonitorSmartphone className={variant === "vertical" ? "w-5 h-5" : "w-3.5 h-3.5"} />
           </button>
         </div>
       )}
@@ -639,7 +639,7 @@ export function AppScreenshotSlot({
       {/* Remove button */}
       {screenshotImage && !isExporting && (
         <button
-          className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10 backdrop-blur-sm"
+          className={`absolute ${variant === "vertical" ? "-top-3 -right-3 w-8 h-8" : "-top-2 -right-2 w-6 h-6"} rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10 backdrop-blur-sm`}
           onClick={(e) => {
             e.stopPropagation();
             setCrop(DEFAULT_CROP);
@@ -649,7 +649,7 @@ export function AppScreenshotSlot({
           }}
           title="Remove screenshot"
         >
-          <X className="w-3.5 h-3.5 text-white/70" />
+          <X className={`${variant === "vertical" ? "w-5 h-5" : "w-3.5 h-3.5"} text-white/70`} />
         </button>
       )}
 
