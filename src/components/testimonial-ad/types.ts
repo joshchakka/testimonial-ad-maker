@@ -41,6 +41,12 @@ export const ACCENT_THEMES: AccentTheme[] = [
   },
 ];
 
+export interface PerFormatSizes {
+  "1x1": number;
+  "16x9": number;
+  "9x16": number;
+}
+
 export interface TestimonialData {
   quote: string;
   clientName: string;
@@ -51,8 +57,8 @@ export interface TestimonialData {
   avatarImage: string | null;
   appScreenshot: string | null;
   rating: number;
-  quoteFontSize: number;
-  borderThickness: number;
+  quoteFontSize: PerFormatSizes;
+  borderThickness: PerFormatSizes;
 }
 
 export const DEFAULT_TESTIMONIAL: TestimonialData = {
@@ -66,6 +72,6 @@ export const DEFAULT_TESTIMONIAL: TestimonialData = {
   avatarImage: null,
   appScreenshot: null,
   rating: 5,
-  quoteFontSize: 24,
-  borderThickness: 2,
+  quoteFontSize: { "1x1": 24, "16x9": 32, "9x16": 32 },
+  borderThickness: { "1x1": 2, "16x9": 2, "9x16": 2 },
 };

@@ -151,16 +151,20 @@ export function TestimonialAdEditor() {
 
   const handleQuoteFontSizeChange = useCallback(
     (size: number) => {
-      handleDataChange({ quoteFontSize: size });
+      handleDataChange({
+        quoteFontSize: { ...data.quoteFontSize, [format]: size },
+      });
     },
-    [handleDataChange]
+    [handleDataChange, data.quoteFontSize, format]
   );
 
   const handleBorderThicknessChange = useCallback(
     (size: number) => {
-      handleDataChange({ borderThickness: size });
+      handleDataChange({
+        borderThickness: { ...data.borderThickness, [format]: size },
+      });
     },
-    [handleDataChange]
+    [handleDataChange, data.borderThickness, format]
   );
 
   const handleCreateNew = useCallback(async () => {
@@ -368,8 +372,8 @@ export function TestimonialAdEditor() {
             format={format}
             accentTheme={accentTheme}
             backgroundMode={backgroundMode}
-            quoteFontSize={data.quoteFontSize}
-            borderThickness={data.borderThickness}
+            quoteFontSize={data.quoteFontSize[format]}
+            borderThickness={data.borderThickness[format]}
             onFormatChange={handleFormatChange}
             onAccentChange={handleAccentChange}
             onBackgroundModeChange={handleBackgroundModeChange}

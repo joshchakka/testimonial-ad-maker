@@ -157,7 +157,7 @@ function SquareLayout({
         <AppScreenshotSlot
           screenshotImage={data.appScreenshot}
           accentTheme={accentTheme}
-          borderThickness={data.borderThickness}
+          borderThickness={data.borderThickness[format]}
           onScreenshotChange={(img) => onDataChange({ appScreenshot: img })}
           variant="square"
           isExporting={isExporting}
@@ -191,7 +191,7 @@ function SquareLayout({
           format={format}
           onQuoteChange={(t) => onDataChange({ quote: t })}
           backgroundMode={backgroundMode}
-          quoteFontSize={data.quoteFontSize}
+          quoteFontSize={data.quoteFontSize[format]}
         />
       </motion.div>
       {/* Horizontal divider */}
@@ -282,7 +282,7 @@ function VerticalLayout({
         <AppScreenshotSlot
           screenshotImage={data.appScreenshot}
           accentTheme={accentTheme}
-          borderThickness={data.borderThickness}
+          borderThickness={data.borderThickness[format]}
           onScreenshotChange={(img) => onDataChange({ appScreenshot: img })}
           variant="vertical"
           isExporting={isExporting}
@@ -318,7 +318,7 @@ function VerticalLayout({
           format={format}
           onQuoteChange={(t) => onDataChange({ quote: t })}
           backgroundMode={backgroundMode}
-          quoteFontSize={data.quoteFontSize}
+          quoteFontSize={data.quoteFontSize[format]}
         />
       </motion.div>
       {/* Horizontal divider */}
@@ -475,7 +475,7 @@ function LandscapeLayout({
             format={format}
             onQuoteChange={(t) => onDataChange({ quote: t })}
             backgroundMode={backgroundMode}
-            quoteFontSize={data.quoteFontSize}
+            quoteFontSize={data.quoteFontSize[format]}
           />
         </motion.div>
 
@@ -582,7 +582,7 @@ function LandscapeLayout({
           <AppScreenshotSlot
             screenshotImage={data.appScreenshot}
             accentTheme={accentTheme}
-            borderThickness={data.borderThickness}
+            borderThickness={data.borderThickness[format]}
             onScreenshotChange={(img) => onDataChange({ appScreenshot: img })}
             variant="landscape"
             isExporting={isExporting}

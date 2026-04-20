@@ -81,7 +81,9 @@ export type Database = {
           avatar_image: string | null
           background_mode: string
           badge_text: string
-          border_thickness: number
+          border_thickness_16x9: number
+          border_thickness_1x1: number
+          border_thickness_9x16: number
           client_name: string
           client_role: string
           created_at: string | null
@@ -90,7 +92,9 @@ export type Database = {
           logo_image: string | null
           logo_text: string
           quote: string
-          quote_font_size: number
+          quote_font_size_16x9: number
+          quote_font_size_1x1: number
+          quote_font_size_9x16: number
           rating: number
           updated_at: string | null
         }
@@ -100,7 +104,9 @@ export type Database = {
           avatar_image?: string | null
           background_mode?: string
           badge_text?: string
-          border_thickness?: number
+          border_thickness_16x9?: number
+          border_thickness_1x1?: number
+          border_thickness_9x16?: number
           client_name?: string
           client_role?: string
           created_at?: string | null
@@ -109,7 +115,9 @@ export type Database = {
           logo_image?: string | null
           logo_text?: string
           quote?: string
-          quote_font_size?: number
+          quote_font_size_16x9?: number
+          quote_font_size_1x1?: number
+          quote_font_size_9x16?: number
           rating?: number
           updated_at?: string | null
         }
@@ -119,7 +127,9 @@ export type Database = {
           avatar_image?: string | null
           background_mode?: string
           badge_text?: string
-          border_thickness?: number
+          border_thickness_16x9?: number
+          border_thickness_1x1?: number
+          border_thickness_9x16?: number
           client_name?: string
           client_role?: string
           created_at?: string | null
@@ -128,7 +138,9 @@ export type Database = {
           logo_image?: string | null
           logo_text?: string
           quote?: string
-          quote_font_size?: number
+          quote_font_size_16x9?: number
+          quote_font_size_1x1?: number
+          quote_font_size_9x16?: number
           rating?: number
           updated_at?: string | null
         }
