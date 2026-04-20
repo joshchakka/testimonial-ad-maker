@@ -33,7 +33,7 @@ export function ControlsToolbar({
   isExporting,
 }: ControlsToolbarProps) {
   const MIN_FONT_SIZE = 16;
-  const MAX_FONT_SIZE = 48;
+  const MAX_FONT_SIZE = 72;
   const FONT_STEP = 2;
   const MIN_BORDER_THICKNESS = 0;
   const MAX_BORDER_THICKNESS = 12;

@@ -235,8 +235,22 @@ export function TestimonialAdEditor() {
         includeQueryParams: true,
       });
 
+      // Build filename with client name and company
+      const slugify = (str: string) =>
+        str
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, "-")
+          .replace(/^-|-$/g, "");
+
+      // Extract company from clientRole (e.g. "CTO, JustLiv" → "JustLiv")
+      const roleParts = data.clientRole.split(",");
+      const company = roleParts.length > 1 ? roleParts.slice(1).join(",").trim() : roleParts[0].trim();
+      const nameSlug = slugify(data.clientName);
+      const companySlug = slugify(company);
+      const clientSlug = nameSlug && companySlug ? `${nameSlug}-${companySlug}` : nameSlug || companySlug || "client";
+
       const link = document.createElement("a");
-      link.download = `testimonial-${format}-${Date.now()}.png`;
+      link.download = `testimonial-${format}-${clientSlug}-${Date.now()}.png`;
       link.href = dataUrl;
       link.click();
     } catch (err) {

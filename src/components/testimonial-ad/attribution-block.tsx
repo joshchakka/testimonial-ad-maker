@@ -7,6 +7,8 @@ interface AttributionBlockProps {
   onNameChange: (text: string) => void;
   onRoleChange: (text: string) => void;
   backgroundMode: BackgroundMode;
+  nameFontSize?: number;
+  roleFontSize?: number;
 }
 
 export function AttributionBlock({
@@ -15,6 +17,8 @@ export function AttributionBlock({
   onNameChange,
   onRoleChange,
   backgroundMode,
+  nameFontSize = 30,
+  roleFontSize = 24,
 }: AttributionBlockProps) {
   const isDark = backgroundMode === "dark";
 
@@ -23,8 +27,9 @@ export function AttributionBlock({
       <span
         contentEditable
         suppressContentEditableWarning
-        className="text-[30px] font-medium outline-none cursor-text"
+        className="font-medium outline-none cursor-text"
         style={{
+          fontSize: nameFontSize,
           fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
           color: isDark ? "rgba(255,255,255,0.95)" : "rgba(0,0,0,0.85)",
         }}
@@ -38,8 +43,9 @@ export function AttributionBlock({
       <span
         contentEditable
         suppressContentEditableWarning
-        className="text-[24px] font-light outline-none cursor-text"
+        className="font-light outline-none cursor-text"
         style={{
+          fontSize: roleFontSize,
           fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
           color: isDark ? "#94A3B8" : "#64748B",
         }}

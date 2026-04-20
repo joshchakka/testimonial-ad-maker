@@ -331,7 +331,7 @@ function VerticalLayout({
       />
       {/* Bottom: Avatar + Attribution */}
       <motion.div
-        className="flex items-center gap-6"
+        className="flex items-center gap-8"
         variants={staggerVariants}
         initial="hidden"
         animate="visible"
@@ -341,7 +341,7 @@ function VerticalLayout({
           avatarImage={data.avatarImage}
           accentTheme={accentTheme}
           onAvatarImageChange={(img) => onDataChange({ avatarImage: img })}
-          size={80}
+          size={110}
           backgroundMode={backgroundMode}
         />
         <AttributionBlock
@@ -350,6 +350,8 @@ function VerticalLayout({
           onNameChange={(t) => onDataChange({ clientName: t })}
           onRoleChange={(t) => onDataChange({ clientRole: t })}
           backgroundMode={backgroundMode}
+          nameFontSize={40}
+          roleFontSize={30}
         />
       </motion.div>
     </div>

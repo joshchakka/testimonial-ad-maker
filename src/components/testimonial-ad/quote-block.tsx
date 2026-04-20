@@ -27,8 +27,11 @@ export function QuoteBlock({
   const fontSize = quoteFontSize ?? defaultSize;
 
   // Scale the quote mark proportionally to the font size
-  const quoteMarkPx = Math.round(fontSize * 3.2);
-  const quoteMarkMb = Math.round(fontSize * -0.18);
+  // Use a smaller multiplier for 9x16 to save vertical space
+  const quoteMarkMultiplier = isVertical ? 1.3 : 3.2;
+  const quoteMarkMbMultiplier = isVertical ? -0.35 : -0.18;
+  const quoteMarkPx = Math.round(fontSize * quoteMarkMultiplier);
+  const quoteMarkMb = Math.round(fontSize * quoteMarkMbMultiplier);
 
   const paddingLeft = isVertical ? "pl-8" : "pl-7";
 
