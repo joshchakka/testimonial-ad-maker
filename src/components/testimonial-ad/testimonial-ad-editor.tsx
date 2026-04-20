@@ -11,6 +11,7 @@ import {
 import { TestimonialCanvas } from "./testimonial-canvas";
 import { ControlsToolbar } from "./controls-toolbar";
 import { useTestimonialPersistence } from "@/hooks/use-testimonial-persistence";
+import { supabaseConfigured } from "@/lib/supabase";
 import { Cloud, CloudOff, Loader2, Plus, Trash2, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -57,7 +58,7 @@ export function TestimonialAdEditor() {
 
   // Auto-create a testimonial if none exist after loading completes
   useEffect(() => {
-    if (!isLoading && testimonials.length === 0 && !activeId) {
+    if (!isLoading && testimonials.length === 0 && !activeId && supabaseConfigured) {
       createNew();
     }
   }, [isLoading, testimonials.length, activeId, createNew]);
