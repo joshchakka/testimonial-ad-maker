@@ -156,6 +156,13 @@ export function TestimonialAdEditor() {
     [handleDataChange]
   );
 
+  const handleBorderThicknessChange = useCallback(
+    (size: number) => {
+      handleDataChange({ borderThickness: size });
+    },
+    [handleDataChange]
+  );
+
   const handleCreateNew = useCallback(async () => {
     await createNew();
     setShowTestimonialList(false);
@@ -362,10 +369,12 @@ export function TestimonialAdEditor() {
             accentTheme={accentTheme}
             backgroundMode={backgroundMode}
             quoteFontSize={data.quoteFontSize}
+            borderThickness={data.borderThickness}
             onFormatChange={handleFormatChange}
             onAccentChange={handleAccentChange}
             onBackgroundModeChange={handleBackgroundModeChange}
             onQuoteFontSizeChange={handleQuoteFontSizeChange}
+            onBorderThicknessChange={handleBorderThicknessChange}
             onExport={handleExport}
             isExporting={isExporting}
           />

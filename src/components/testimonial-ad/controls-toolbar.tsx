@@ -8,10 +8,12 @@ interface ControlsToolbarProps {
   accentTheme: AccentTheme;
   backgroundMode: BackgroundMode;
   quoteFontSize: number;
+  borderThickness: number;
   onFormatChange: (format: AdFormat) => void;
   onAccentChange: (theme: AccentTheme) => void;
   onBackgroundModeChange: (mode: BackgroundMode) => void;
   onQuoteFontSizeChange: (size: number) => void;
+  onBorderThicknessChange: (size: number) => void;
   onExport: () => void;
   isExporting: boolean;
 }
@@ -21,16 +23,21 @@ export function ControlsToolbar({
   accentTheme,
   backgroundMode,
   quoteFontSize,
+  borderThickness,
   onFormatChange,
   onAccentChange,
   onBackgroundModeChange,
   onQuoteFontSizeChange,
+  onBorderThicknessChange,
   onExport,
   isExporting,
 }: ControlsToolbarProps) {
   const MIN_FONT_SIZE = 16;
   const MAX_FONT_SIZE = 48;
-  const STEP = 2;
+  const FONT_STEP = 2;
+  const MIN_BORDER_THICKNESS = 1;
+  const MAX_BORDER_THICKNESS = 12;
+  const BORDER_STEP = 1;
   return (
     <div className="flex flex-nowrap items-center justify-end gap-3">
       {/* Format Toggle */}
@@ -127,7 +134,9 @@ export function ControlsToolbar({
         <Type className="w-3.5 h-3.5 text-white/40 ml-2" />
         <button
           onClick={() =>
-            onQuoteFontSizeChange(Math.max(MIN_FONT_SIZE, quoteFontSize - STEP))
+            onQuoteFontSizeChange(
+              Math.max(MIN_FONT_SIZE, quoteFontSize - FONT_STEP)
+            )
           }
           disabled={quoteFontSize <= MIN_FONT_SIZE}
           className={cn(
@@ -147,12 +156,59 @@ export function ControlsToolbar({
         </span>
         <button
           onClick={() =>
-            onQuoteFontSizeChange(Math.min(MAX_FONT_SIZE, quoteFontSize + STEP))
+            onQuoteFontSizeChange(
+              Math.min(MAX_FONT_SIZE, quoteFontSize + FONT_STEP)
+            )
           }
           disabled={quoteFontSize >= MAX_FONT_SIZE}
           className={cn(
             "flex items-center justify-center w-7 h-7 rounded-md text-xs font-medium transition-all",
             quoteFontSize >= MAX_FONT_SIZE
+              ? "text-white/20 cursor-not-allowed"
+              : "text-white/60 hover:text-white hover:bg-white/10"
+          )}
+        >
+          <Plus className="w-3 h-3" />
+        </button>
+      </div>
+
+      {/* Screenshot Border Thickness */}
+      <div className="flex items-center gap-1.5 bg-white/5 rounded-lg p-1 border border-white/10">
+        <span className="text-[11px] text-white/40 font-medium ml-2">
+          Border
+        </span>
+        <button
+          onClick={() =>
+            onBorderThicknessChange(
+              Math.max(MIN_BORDER_THICKNESS, borderThickness - BORDER_STEP)
+            )
+          }
+          disabled={borderThickness <= MIN_BORDER_THICKNESS}
+          className={cn(
+            "flex items-center justify-center w-7 h-7 rounded-md text-xs font-medium transition-all",
+            borderThickness <= MIN_BORDER_THICKNESS
+              ? "text-white/20 cursor-not-allowed"
+              : "text-white/60 hover:text-white hover:bg-white/10"
+          )}
+        >
+          <Minus className="w-3 h-3" />
+        </button>
+        <span
+          className="text-[11px] text-white/70 font-mono w-8 text-center tabular-nums"
+          style={{ fontFamily: "'JetBrains Mono', monospace" }}
+        >
+          {borderThickness}
+        </span>
+        <button
+          onClick={() =>
+            onBorderThicknessChange(
+              Math.min(MAX_BORDER_THICKNESS, borderThickness + BORDER_STEP)
+            )
+          }
+          disabled={borderThickness >= MAX_BORDER_THICKNESS}
+          className={cn(
+            "flex items-center justify-center w-7 h-7 rounded-md text-xs font-medium transition-all",
+            borderThickness >= MAX_BORDER_THICKNESS
               ? "text-white/20 cursor-not-allowed"
               : "text-white/60 hover:text-white hover:bg-white/10"
           )}

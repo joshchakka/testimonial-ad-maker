@@ -52,6 +52,7 @@ export interface TestimonialData {
   appScreenshot: string | null;
   rating: number;
   quoteFontSize: number;
+  borderThickness: number;
 }
 
 export const DEFAULT_TESTIMONIAL: TestimonialData = {
@@ -66,4 +67,5 @@ export const DEFAULT_TESTIMONIAL: TestimonialData = {
   appScreenshot: null,
   rating: 5,
   quoteFontSize: 24,
+  borderThickness: 2,
 };

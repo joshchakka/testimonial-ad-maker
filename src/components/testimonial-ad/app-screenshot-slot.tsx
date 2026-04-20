@@ -9,16 +9,17 @@ import {
   Check,
   Pencil,
 } from "lucide-react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { AccentTheme } from "./types";
 
 interface AppScreenshotSlotProps {
   screenshotImage: string | null;
   accentTheme: AccentTheme;
+  borderThickness: number;
   onScreenshotChange: (dataUrl: string | null) => void;
   /** Orientation hint for sizing */
   variant?: "square" | "vertical" | "landscape";
-  /** When true, hide all editor chrome (crop overlays, badges, borders) */
+  /** When true, hide editor-only chrome like crop controls and approval feedback */
   isExporting?: boolean;
 }
 
@@ -37,10 +38,81 @@ interface ApprovedCrop {
 }
 
 const DEFAULT_CROP: CropState = { scale: 1, offsetX: 0, offsetY: 0 };
+const DEFAULT_CONTAINER_SIZE = { width: 0, height: 0 };
+const SCREENSHOT_FRAME_RADIUS = 18;
+
+function getContainedRect(
+  containerWidth: number,
+  containerHeight: number,
+  naturalSize: { w: number; h: number }
+): ApprovedCrop {
+  const imageAspect = naturalSize.w / naturalSize.h;
+  const containerAspect = containerWidth / containerHeight;
+
+  if (imageAspect > containerAspect) {
+    const width = containerWidth;
+    const height = containerWidth / imageAspect;
+    return {
+      x: 0,
+      y: (containerHeight - height) / 2,
+      width,
+      height,
+    };
+  }
+
+  const height = containerHeight;
+  const width = containerHeight * imageAspect;
+  return {
+    x: (containerWidth - width) / 2,
+    y: 0,
+    width,
+    height,
+  };
+}
+
+function getScaledRect(baseRect: ApprovedCrop, crop: CropState): ApprovedCrop {
+  const width = baseRect.width * crop.scale;
+  const height = baseRect.height * crop.scale;
+
+  return {
+    x: baseRect.x + crop.offsetX - (width - baseRect.width) / 2,
+    y: baseRect.y + crop.offsetY - (height - baseRect.height) / 2,
+    width,
+    height,
+  };
+}
+
+function getVisibleBounds(
+  rect: ApprovedCrop,
+  containerWidth: number,
+  containerHeight: number
+): ApprovedCrop | null {
+  const left = Math.max(0, rect.x);
+  const top = Math.max(0, rect.y);
+  const right = Math.min(containerWidth, rect.x + rect.width);
+  const bottom = Math.min(containerHeight, rect.y + rect.height);
+  const width = Math.max(0, right - left);
+  const height = Math.max(0, bottom - top);
+
+  if (width <= 0 || height <= 0) return null;
+
+  return {
+    x: left,
+    y: top,
+    width,
+    height,
+  };
+}
+
+function getInteractionScale(element: HTMLDivElement | null): number {
+  if (!element || element.clientWidth === 0) return 1;
+  return element.getBoundingClientRect().width / element.clientWidth || 1;
+}
 
 export function AppScreenshotSlot({
   screenshotImage,
   accentTheme,
+  borderThickness,
   onScreenshotChange,
   variant = "square",
   isExporting = false,
@@ -53,12 +125,18 @@ export function AppScreenshotSlot({
   const [isDragging, setIsDragging] = useState(false);
   const [showControls, setShowControls] = useState(false);
   const [isApproved, setIsApproved] = useState(false);
-  const [approvedCrop, setApprovedCrop] = useState<ApprovedCrop | null>(null);
   const [showApprovedFeedback, setShowApprovedFeedback] = useState(false);
   const [naturalSize, setNaturalSize] = useState<{ w: number; h: number } | null>(null);
-  const dragStartRef = useRef<{ x: number; y: number; ox: number; oy: number } | null>(null);
+  const [containerSize, setContainerSize] = useState(DEFAULT_CONTAINER_SIZE);
+  const dragStartRef = useRef<{
+    x: number;
+    y: number;
+    ox: number;
+    oy: number;
+    interactionScale: number;
+  } | null>(null);
+  const approvalTimeoutRef = useRef<number | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const imgRef = useRef<HTMLImageElement>(null);
 
   const dimensions = {
     square: { width: 360, height: 240 },
@@ -68,61 +146,39 @@ export function AppScreenshotSlot({
 
   const dim = dimensions[variant];
 
-  // Compute the visible image bounds within the container
-  const computeVisibleBounds = useCallback((): ApprovedCrop | null => {
+  useEffect(() => {
     const container = containerRef.current;
-    const img = imgRef.current;
-    if (!container || !img || !naturalSize) return null;
+    if (!container) return;
 
-    const containerW = container.clientWidth;
-    const containerH = container.clientHeight;
-    const { w: natW, h: natH } = naturalSize;
+    const updateSize = () => {
+      const next = {
+        width: container.clientWidth,
+        height: container.clientHeight,
+      };
 
-    let renderedW: number;
-    let renderedH: number;
+      setContainerSize((prev) =>
+        prev.width === next.width && prev.height === next.height ? prev : next
+      );
+    };
 
-    if (crop.scale <= 1) {
-      const imgAspect = natW / natH;
-      const contAspect = containerW / containerH;
-      if (imgAspect > contAspect) {
-        renderedW = containerW;
-        renderedH = containerW / imgAspect;
-      } else {
-        renderedH = containerH;
-        renderedW = containerH * imgAspect;
-      }
-    } else {
-      const imgAspect = natW / natH;
-      const contAspect = containerW / containerH;
-      if (imgAspect > contAspect) {
-        renderedH = containerH;
-        renderedW = containerH * imgAspect;
-      } else {
-        renderedW = containerW;
-        renderedH = containerW / imgAspect;
-      }
-    }
+    updateSize();
 
-    const scaledW = renderedW * crop.scale;
-    const scaledH = renderedH * crop.scale;
-    const imgLeft = (containerW - scaledW) / 2 + crop.offsetX;
-    const imgTop = (containerH - scaledH) / 2 + crop.offsetY;
+    const observer = new ResizeObserver(updateSize);
+    observer.observe(container);
 
-    const visLeft = Math.max(0, imgLeft);
-    const visTop = Math.max(0, imgTop);
-    const visRight = Math.min(containerW, imgLeft + scaledW);
-    const visBottom = Math.min(containerH, imgTop + scaledH);
-
-    const visW = Math.max(0, visRight - visLeft);
-    const visH = Math.max(0, visBottom - visTop);
-
-    if (visW <= 0 || visH <= 0) return null;
-
-    return { x: visLeft, y: visTop, width: visW, height: visH };
-  }, [crop, naturalSize]);
+    return () => observer.disconnect();
+  }, []);
 
   // Load natural image dimensions
   useEffect(() => {
+    if (approvalTimeoutRef.current !== null) {
+      window.clearTimeout(approvalTimeoutRef.current);
+      approvalTimeoutRef.current = null;
+    }
+    setCrop(DEFAULT_CROP);
+    setIsApproved(false);
+    setShowApprovedFeedback(false);
+
     if (!screenshotImage) {
       setNaturalSize(null);
       return;
@@ -131,6 +187,38 @@ export function AppScreenshotSlot({
     img.onload = () => setNaturalSize({ w: img.naturalWidth, h: img.naturalHeight });
     img.src = screenshotImage;
   }, [screenshotImage]);
+
+  useEffect(
+    () => () => {
+      if (approvalTimeoutRef.current !== null) {
+        window.clearTimeout(approvalTimeoutRef.current);
+      }
+    },
+    []
+  );
+
+  const baseImageRect = useMemo(() => {
+    if (!naturalSize || containerSize.width === 0 || containerSize.height === 0) {
+      return null;
+    }
+
+    return getContainedRect(containerSize.width, containerSize.height, naturalSize);
+  }, [naturalSize, containerSize.height, containerSize.width]);
+
+  const scaledImageRect = useMemo(() => {
+    if (!baseImageRect) return null;
+    return getScaledRect(baseImageRect, crop);
+  }, [baseImageRect, crop]);
+
+  const visibleBounds = useMemo(() => {
+    if (!scaledImageRect) return null;
+
+    return getVisibleBounds(
+      scaledImageRect,
+      containerSize.width,
+      containerSize.height
+    );
+  }, [scaledImageRect, containerSize.height, containerSize.width]);
 
   const handleZoomIn = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
@@ -148,29 +236,31 @@ export function AppScreenshotSlot({
     e.stopPropagation();
     setCrop(DEFAULT_CROP);
     setIsApproved(false);
-    setApprovedCrop(null);
     setShowApprovedFeedback(false);
   }, []);
 
   const handleApprove = useCallback(
     (e: React.MouseEvent) => {
       e.stopPropagation();
-      const bounds = computeVisibleBounds();
-      if (bounds) {
-        setApprovedCrop(bounds);
+      if (visibleBounds) {
         setIsApproved(true);
         // Show badge + dim overlay briefly then fade away
         setShowApprovedFeedback(true);
-        setTimeout(() => setShowApprovedFeedback(false), 1200);
+        if (approvalTimeoutRef.current !== null) {
+          window.clearTimeout(approvalTimeoutRef.current);
+        }
+        approvalTimeoutRef.current = window.setTimeout(() => {
+          setShowApprovedFeedback(false);
+          approvalTimeoutRef.current = null;
+        }, 1200);
       }
     },
-    [computeVisibleBounds]
+    [visibleBounds]
   );
 
   const handleEditCrop = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
     setIsApproved(false);
-    setApprovedCrop(null);
     setShowApprovedFeedback(false);
   }, []);
 
@@ -185,13 +275,14 @@ export function AppScreenshotSlot({
         y: e.clientY,
         ox: crop.offsetX,
         oy: crop.offsetY,
+        interactionScale: getInteractionScale(containerRef.current),
       };
 
       const handleMouseMove = (ev: MouseEvent) => {
         const start = dragStartRef.current;
         if (!start) return;
-        const dx = ev.clientX - start.x;
-        const dy = ev.clientY - start.y;
+        const dx = (ev.clientX - start.x) / start.interactionScale;
+        const dy = (ev.clientY - start.y) / start.interactionScale;
         setCrop((prev) => ({
           ...prev,
           offsetX: start.ox + dx,
@@ -233,15 +324,35 @@ export function AppScreenshotSlot({
         width: dim.width,
         height: dim.height,
         borderRadius: 16,
-        boxShadow: screenshotImage
-          ? `0 0 0 2px ${accentTheme.color}, 0 0 24px ${accentTheme.glowColor}, 0 0 48px ${accentTheme.glowColor}50`
-          : undefined,
       }}
       onMouseEnter={() => setShowControls(true)}
       onMouseLeave={() => {
         setShowControls(false);
       }}
     >
+      {screenshotImage && visibleBounds && (
+        <div
+          className="absolute pointer-events-none z-[18]"
+          style={{
+            left: visibleBounds.x,
+            top: visibleBounds.y,
+            width: visibleBounds.width,
+            height: visibleBounds.height,
+            borderRadius: SCREENSHOT_FRAME_RADIUS,
+            border:
+              borderThickness > 0
+                ? `${borderThickness}px solid ${accentTheme.color}`
+                : "none",
+            boxSizing: "border-box",
+            boxShadow:
+              borderThickness > 0
+                ? `0 0 ${14 + borderThickness * 2}px ${accentTheme.glowColor}, 0 0 ${34 + borderThickness * 4}px ${accentTheme.glowColor}55`
+                : "none",
+            transition: isDragging ? "none" : "all 0.15s ease-out",
+          }}
+        />
+      )}
+
       <div
         className="w-full h-full rounded-2xl transition-all relative overflow-hidden"
         style={{
@@ -267,41 +378,48 @@ export function AppScreenshotSlot({
         onWheel={screenshotImage ? handleWheel : undefined}
       >
         {screenshotImage ? (
-          <div
-            className="w-full h-full overflow-hidden relative"
-            style={{ background: "#0D1117" }}
-          >
-            <img
-              ref={imgRef}
-              src={screenshotImage}
-              alt="App screenshot"
-              className="absolute inset-0 w-full h-full select-none pointer-events-none"
-              draggable={false}
-              style={{
-                objectFit: crop.scale <= 1 ? "contain" : "cover",
-                transform: `scale(${crop.scale}) translate(${crop.offsetX / crop.scale}px, ${crop.offsetY / crop.scale}px)`,
-                transformOrigin: "center center",
-                transition: isDragging ? "none" : "transform 0.15s ease-out",
-              }}
-            />
-
-            {/* Approved crop overlay: dim area outside + badge — fades after 1.2s */}
-            {isApproved && approvedCrop && !isExporting && (
-              <>
-                {/* Accent border around the approved crop — stays visible always, with uniform glow */}
-                <div
-                  className="absolute pointer-events-none z-[15]"
+          <div className="w-full h-full relative">
+            {scaledImageRect && visibleBounds && (
+              <div
+                className="absolute pointer-events-none z-[15] overflow-hidden"
+                style={{
+                  left: visibleBounds.x,
+                  top: visibleBounds.y,
+                  width: visibleBounds.width,
+                  height: visibleBounds.height,
+                  borderRadius: SCREENSHOT_FRAME_RADIUS,
+                  transition: isDragging ? "none" : "all 0.15s ease-out",
+                }}
+              >
+                <img
+                  src={screenshotImage}
+                  alt="App screenshot"
+                  className="absolute select-none pointer-events-none"
+                  draggable={false}
                   style={{
-                    left: approvedCrop.x - 3,
-                    top: approvedCrop.y - 3,
-                    width: approvedCrop.width + 6,
-                    height: approvedCrop.height + 6,
-                    borderRadius: 14,
-                    border: `2px solid ${accentTheme.color}`,
-                    boxShadow: `0 0 20px ${accentTheme.glowColor}, 0 0 40px ${accentTheme.glowColor}60, inset 0 0 20px ${accentTheme.glowColor}40`,
-                    transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
+                    left: scaledImageRect.x - visibleBounds.x,
+                    top: scaledImageRect.y - visibleBounds.y,
+                    width: scaledImageRect.width,
+                    height: scaledImageRect.height,
+                    maxWidth: "none",
+                    userSelect: "none",
                   }}
                 />
+
+                {!isApproved && (
+                  <div
+                    className="absolute inset-0"
+                    style={{
+                      boxShadow: "inset 0 0 40px rgba(0,0,0,0.15)",
+                    }}
+                  />
+                )}
+              </div>
+            )}
+
+            {/* Approved crop overlay: dim area outside + badge — fades after 1.2s */}
+            {isApproved && visibleBounds && !isExporting && (
+              <>
                 {/* Dim overlay + badge — only visible briefly after approval */}
                 <div
                   className="absolute inset-0 pointer-events-none z-[14]"
@@ -317,7 +435,7 @@ export function AppScreenshotSlot({
                       left: 0,
                       top: 0,
                       width: "100%",
-                      height: approvedCrop.y,
+                      height: visibleBounds.y,
                       background: "rgba(0,0,0,0.55)",
                     }}
                   />
@@ -326,9 +444,9 @@ export function AppScreenshotSlot({
                     className="absolute"
                     style={{
                       left: 0,
-                      top: approvedCrop.y + approvedCrop.height,
+                      top: visibleBounds.y + visibleBounds.height,
                       width: "100%",
-                      height: `calc(100% - ${approvedCrop.y + approvedCrop.height}px)`,
+                      height: `calc(100% - ${visibleBounds.y + visibleBounds.height}px)`,
                       background: "rgba(0,0,0,0.55)",
                     }}
                   />
@@ -337,9 +455,9 @@ export function AppScreenshotSlot({
                     className="absolute"
                     style={{
                       left: 0,
-                      top: approvedCrop.y,
-                      width: approvedCrop.x,
-                      height: approvedCrop.height,
+                      top: visibleBounds.y,
+                      width: visibleBounds.x,
+                      height: visibleBounds.height,
                       background: "rgba(0,0,0,0.55)",
                     }}
                   />
@@ -347,10 +465,10 @@ export function AppScreenshotSlot({
                   <div
                     className="absolute"
                     style={{
-                      left: approvedCrop.x + approvedCrop.width,
-                      top: approvedCrop.y,
-                      width: `calc(100% - ${approvedCrop.x + approvedCrop.width}px)`,
-                      height: approvedCrop.height,
+                      left: visibleBounds.x + visibleBounds.width,
+                      top: visibleBounds.y,
+                      width: `calc(100% - ${visibleBounds.x + visibleBounds.width}px)`,
+                      height: visibleBounds.height,
                       background: "rgba(0,0,0,0.55)",
                     }}
                   />
@@ -358,8 +476,8 @@ export function AppScreenshotSlot({
                   <div
                     className="absolute z-[16] flex items-center gap-1.5 px-2.5 py-1 rounded-full"
                     style={{
-                      left: approvedCrop.x + approvedCrop.width / 2,
-                      top: approvedCrop.y - 8,
+                      left: visibleBounds.x + visibleBounds.width / 2,
+                      top: visibleBounds.y - 8,
                       transform: "translate(-50%, -100%)",
                       background: accentTheme.color,
                       boxShadow: `0 2px 12px ${accentTheme.glowColor}`,
@@ -411,15 +529,6 @@ export function AppScreenshotSlot({
           </div>
         )}
 
-        {/* Subtle inner shadow overlay for depth when image is present */}
-        {screenshotImage && !isApproved && (
-          <div
-            className="absolute inset-0 pointer-events-none rounded-2xl"
-            style={{
-              boxShadow: "inset 0 0 40px rgba(0,0,0,0.15)",
-            }}
-          />
-        )}
       </div>
 
       {/* Crop/Resize Controls */}
@@ -533,7 +642,6 @@ export function AppScreenshotSlot({
             e.stopPropagation();
             setCrop(DEFAULT_CROP);
             setIsApproved(false);
-            setApprovedCrop(null);
             setShowApprovedFeedback(false);
             onScreenshotChange(null);
           }}
@@ -552,7 +660,6 @@ export function AppScreenshotSlot({
           handleChange(e);
           setCrop(DEFAULT_CROP);
           setIsApproved(false);
-          setApprovedCrop(null);
           setShowApprovedFeedback(false);
         }}
       />

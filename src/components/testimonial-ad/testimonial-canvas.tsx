@@ -157,6 +157,7 @@ function SquareLayout({
         <AppScreenshotSlot
           screenshotImage={data.appScreenshot}
           accentTheme={accentTheme}
+          borderThickness={data.borderThickness}
           onScreenshotChange={(img) => onDataChange({ appScreenshot: img })}
           variant="square"
           isExporting={isExporting}
@@ -283,6 +284,7 @@ function VerticalLayout({
         <AppScreenshotSlot
           screenshotImage={data.appScreenshot}
           accentTheme={accentTheme}
+          borderThickness={data.borderThickness}
           onScreenshotChange={(img) => onDataChange({ appScreenshot: img })}
           variant="vertical"
           isExporting={isExporting}
@@ -582,6 +584,7 @@ function LandscapeLayout({
           <AppScreenshotSlot
             screenshotImage={data.appScreenshot}
             accentTheme={accentTheme}
+            borderThickness={data.borderThickness}
             onScreenshotChange={(img) => onDataChange({ appScreenshot: img })}
             variant="landscape"
             isExporting={isExporting}

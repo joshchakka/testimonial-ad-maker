@@ -51,6 +51,7 @@ function toRecord(row: any): TestimonialRecord {
       appScreenshot: row.app_screenshot,
       rating: row.rating,
       quoteFontSize: row.quote_font_size,
+      borderThickness: row.border_thickness ?? DEFAULT_TESTIMONIAL.borderThickness,
     },
     format: row.format as AdFormat,
     accentTheme:
@@ -134,6 +135,7 @@ export function useTestimonialPersistence(): UseTestimonialPersistenceReturn {
               app_screenshot: testimonialData.appScreenshot,
               rating: testimonialData.rating,
               quote_font_size: testimonialData.quoteFontSize,
+              border_thickness: testimonialData.borderThickness,
               format,
               accent_theme_name: accentTheme.name,
               background_mode: backgroundMode,
@@ -202,6 +204,7 @@ export function useTestimonialPersistence(): UseTestimonialPersistenceReturn {
           app_screenshot: defaults.appScreenshot,
           rating: defaults.rating,
           quote_font_size: defaults.quoteFontSize,
+          border_thickness: defaults.borderThickness,
           format: "1x1",
           accent_theme_name: ACCENT_THEMES[0].name,
           background_mode: "dark",

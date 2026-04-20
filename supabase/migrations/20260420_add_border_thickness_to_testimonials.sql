@@ -1,0 +1,2 @@
+ALTER TABLE testimonials
+ADD COLUMN IF NOT EXISTS border_thickness INTEGER NOT NULL DEFAULT 2;

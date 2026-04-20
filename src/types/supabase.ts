@@ -19,6 +19,7 @@ export type Database = {
           accent_theme_name: string
           app_screenshot: string | null
           avatar_image: string | null
+          border_thickness: number
           background_mode: string
           badge_text: string
           client_name: string
@@ -38,6 +39,7 @@ export type Database = {
           accent_theme_name?: string
           app_screenshot?: string | null
           avatar_image?: string | null
+          border_thickness?: number
           background_mode?: string
           badge_text?: string
           client_name: string
@@ -57,6 +59,7 @@ export type Database = {
           accent_theme_name?: string
           app_screenshot?: string | null
           avatar_image?: string | null
+          border_thickness?: number
           background_mode?: string
           badge_text?: string
           client_name?: string
@@ -79,6 +82,7 @@ export type Database = {
           accent_theme_name: string
           app_screenshot: string | null
           avatar_image: string | null
+          border_thickness: number
           background_mode: string
           badge_text: string
           client_name: string
@@ -97,6 +101,7 @@ export type Database = {
           accent_theme_name?: string
           app_screenshot?: string | null
           avatar_image?: string | null
+          border_thickness?: number
           background_mode?: string
           badge_text?: string
           client_name?: string
@@ -115,6 +120,7 @@ export type Database = {
           accent_theme_name?: string
           app_screenshot?: string | null
           avatar_image?: string | null
+          border_thickness?: number
           background_mode?: string
           badge_text?: string
           client_name?: string
