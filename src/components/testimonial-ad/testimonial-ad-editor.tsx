@@ -259,8 +259,8 @@ export function TestimonialAdEditor() {
     <div className="h-screen bg-[#080B10] flex flex-col overflow-hidden">
       {/* Header */}
       <header className="flex-shrink-0 px-6 py-3 border-b border-white/5">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-4">
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex items-center gap-4 flex-shrink-0">
             <div>
               <h1
                 className="text-sm font-semibold text-white/90 tracking-wide"

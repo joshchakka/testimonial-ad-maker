@@ -32,7 +32,7 @@ export function ControlsToolbar({
   const MAX_FONT_SIZE = 48;
   const STEP = 2;
   return (
-    <div className="flex flex-wrap items-center justify-center gap-6 py-4">
+    <div className="flex flex-nowrap items-center justify-end gap-3">
       {/* Format Toggle */}
       <div className="flex items-center gap-1 bg-white/5 rounded-lg p-1 border border-white/10">
         <button
@@ -102,8 +102,8 @@ export function ControlsToolbar({
       </div>
 
       {/* Accent Color Picker */}
-      <div className="flex items-center gap-2">
-        <span className="text-[10px] uppercase tracking-wider text-white/30 font-medium mr-1">
+      <div className="flex items-center gap-1.5">
+        <span className="text-[10px] uppercase tracking-wider text-white/30 font-medium mr-0.5">
           Accent
         </span>
         {ACCENT_THEMES.map((theme) => (
@@ -111,7 +111,7 @@ export function ControlsToolbar({
             key={theme.name}
             onClick={() => onAccentChange(theme)}
             className={cn(
-              "w-7 h-7 rounded-full transition-all border-2",
+              "w-6 h-6 rounded-full transition-all border-2",
               accentTheme.name === theme.name
                 ? "border-white scale-110"
                 : "border-transparent hover:scale-110 hover:border-white/30"
@@ -165,7 +165,7 @@ export function ControlsToolbar({
       <button
         onClick={onExport}
         disabled={isExporting}
-        className="group flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium text-white transition-all hover:scale-[1.03] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+        className="group flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-medium text-white transition-all hover:scale-[1.03] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
         style={{
           background: `linear-gradient(135deg, ${accentTheme.color}, ${accentTheme.color}cc)`,
           boxShadow: `0 4px 20px ${accentTheme.glowColor}`,
