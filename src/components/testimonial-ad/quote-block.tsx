@@ -29,8 +29,8 @@ export function QuoteBlock({
   // Scale the quote mark proportionally to the font size
   // Use a smaller multiplier for 9x16 and 1x1 to save vertical space
   const isSquare = format === "1x1";
-  const quoteMarkMultiplier = isVertical ? 1.3 : isSquare ? 1.8 : 3.2;
-  const quoteMarkMbMultiplier = isVertical ? -0.35 : isSquare ? -0.3 : -0.18;
+  const quoteMarkMultiplier = isVertical ? 1.3 : isSquare ? 1.5 : 3.2;
+  const quoteMarkMbMultiplier = isVertical ? -0.35 : isSquare ? -0.4 : -0.18;
   const quoteMarkPx = Math.round(fontSize * quoteMarkMultiplier);
   const quoteMarkMb = Math.round(fontSize * quoteMarkMbMultiplier);
 
@@ -62,7 +62,7 @@ export function QuoteBlock({
         <p
           contentEditable
           suppressContentEditableWarning
-          className="leading-relaxed outline-none cursor-text"
+          className="leading-snug outline-none cursor-text"
           style={{
             fontFamily: "'Hedvig Letters Serif', serif",
             fontWeight: 400,

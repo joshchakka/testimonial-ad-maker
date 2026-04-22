@@ -162,7 +162,7 @@ function SquareLayout({
       </motion.div>
       {/* App Screenshot – hero slot */}
       <motion.div
-        className="mt-4 flex justify-center flex-1 min-h-0 overflow-hidden"
+        className="mt-4 flex justify-center items-end flex-1 min-h-0 overflow-hidden"
         variants={staggerVariants}
         initial="hidden"
         animate="visible"
@@ -179,7 +179,7 @@ function SquareLayout({
       </motion.div>
       {/* Star Rating */}
       <motion.div
-        className="mt-3 mb-2"
+        className="mt-2 mb-1"
         variants={staggerVariants}
         initial="hidden"
         animate="visible"
@@ -193,7 +193,7 @@ function SquareLayout({
       </motion.div>
       {/* Quote */}
       <motion.div
-        className="mb-4"
+        className="mb-3"
         variants={staggerVariants}
         initial="hidden"
         animate="visible"
