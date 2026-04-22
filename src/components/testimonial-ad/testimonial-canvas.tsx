@@ -162,7 +162,7 @@ function SquareLayout({
       </motion.div>
       {/* App Screenshot – hero slot */}
       <motion.div
-        className="mt-6 flex justify-center flex-1 min-h-0 overflow-hidden"
+        className="mt-4 flex justify-center flex-1 min-h-0 overflow-hidden"
         variants={staggerVariants}
         initial="hidden"
         animate="visible"
@@ -179,7 +179,7 @@ function SquareLayout({
       </motion.div>
       {/* Star Rating */}
       <motion.div
-        className="mt-4 mb-3"
+        className="mt-3 mb-2"
         variants={staggerVariants}
         initial="hidden"
         animate="visible"
@@ -210,7 +210,7 @@ function SquareLayout({
       </motion.div>
       {/* Horizontal divider */}
       <motion.div
-        className={`w-full h-px mb-4 ${isDark ? "bg-white/10" : "bg-black/10"}`}
+        className={`w-full h-px mb-3 ${isDark ? "bg-white/10" : "bg-black/10"}`}
         variants={staggerVariants}
         initial="hidden"
         animate="visible"
